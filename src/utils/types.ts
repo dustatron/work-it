@@ -9,9 +9,18 @@ export const RoutineTypeValues = {
 export type RoutineType = keyof typeof RoutineTypeValues;
 
 export const exerciseSchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(1),
   description: z.string().optional(),
   routineType: z.custom<RoutineType>(),
 });
 
 export type ExerciseSchema = z.infer<typeof exerciseSchema>;
+
+export const workoutSchema = z.object({
+  name: z.string().min(1),
+  routineType: z.custom<RoutineType>(),
+  amount: z.number(),
+});
+
+export type WorkoutSchema = z.infer<typeof workoutSchema>;

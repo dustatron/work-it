@@ -5,15 +5,12 @@ import {
   Tab,
   TabPanel,
   Container,
-  Box,
-  Stack,
-  Text,
-  Button,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
-import capitalize from "lodash/capitalize";
 import AddExercise from "./AddExercise";
+import Workout from "./Workout";
+import Exercise from "./Exercise";
 
 type Props = {};
 
@@ -36,25 +33,12 @@ export default function index({}: Props) {
         </TabList>
 
         <TabPanels h="100%">
-          <TabPanel>workout</TabPanel>
+          <TabPanel>
+            <Workout />
+          </TabPanel>
 
           <TabPanel h="100%">
-            <Stack h="99vh" w="100%">
-              <Stack
-                minH="90%"
-                w="100%"
-                border="1px solid black"
-                justifyContent="start"
-                alignItems="center"
-                p="2"
-              >
-                {exerciseData?.map((exercise) => (
-                  <Button w="100%">
-                    <Text textAlign="center">{capitalize(exercise.name)}</Text>
-                  </Button>
-                ))}
-              </Stack>
-            </Stack>
+            <Exercise exerciseData={exerciseData} />
           </TabPanel>
           <TabPanel>
             <AddExercise setTabIndex={setTabIndex} />
