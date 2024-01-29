@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { exerciseSchema } from "../../../utils/types";
 
 import {
@@ -13,12 +14,19 @@ export const exerciseRouter = createTRPCRouter({
   addExercise: protectedProcedure
     .input(exerciseSchema)
     .mutation(async ({ ctx, input }) => {
+      const user = await ctx.session.user;
       return ctx.db.exercise.create({
         data: {
           name: input.name,
           description: input.description,
           routineType: input.routineType,
+          userId: user.id,
         },
       });
+    }),
+  getExercise: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.exercise.findFirst({ where: { id: input.id } });
     }),
 });

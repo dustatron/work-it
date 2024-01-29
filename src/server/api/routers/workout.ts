@@ -11,14 +11,36 @@ export const workoutRouter = createTRPCRouter({
   listWorkouts: publicProcedure.query(({ ctx }) => {
     return ctx.db.workout.findMany();
   }),
+  getWorkout: publicProcedure
+    .input(z.object({ workoutId: z.string().optional() }))
+    .query(async ({ input, ctx }) => {
+      return ctx.db.workout.findFirst({
+        where: { id: input.workoutId },
+        include: { exercises: true, sets: true },
+      });
+    }),
   addWorkout: protectedProcedure
     .input(workoutSchema)
     .mutation(async ({ ctx, input }) => {
-      const exercise = await ctx.db.exercise.findMany();
-      const { amount, name, routineType } = input;
-      const selection = exercise.slice(0, amount);
-      return ctx.db.workout.create({
-        data: { name, routineType, exercises: { connect: selection } },
+      const exercise = await ctx.db.exercise.findMany({
+        where: { routineType: input.routineType },
       });
+      const { amount, name, routineType } = input;
+      const selection = exercise.slice(0, Number(amount));
+      const user = await ctx.session.user;
+
+      return ctx.db.workout.create({
+        data: {
+          name,
+          routineType,
+          exercises: { connect: selection },
+          userId: user.id,
+        },
+      });
+    }),
+  deleteWorkout: protectedProcedure
+    .input(z.object({ workoutId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.workout.delete({ where: { id: input.workoutId } });
     }),
 });

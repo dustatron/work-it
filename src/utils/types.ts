@@ -20,7 +20,17 @@ export type ExerciseSchema = z.infer<typeof exerciseSchema>;
 export const workoutSchema = z.object({
   name: z.string().min(1),
   routineType: z.custom<RoutineType>(),
-  amount: z.number(),
+  amount: z.string(),
 });
 
 export type WorkoutSchema = z.infer<typeof workoutSchema>;
+
+export type Exercise = {
+  id: string;
+  name: string;
+  routineType: string;
+  description: string | null;
+  dateCreated: Date;
+  workoutId: string | null;
+  userId: string;
+};

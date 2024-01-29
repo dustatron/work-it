@@ -18,13 +18,11 @@ import {
   exerciseSchema,
 } from "~/utils/types";
 import { useToast } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
-type Props = {
-  setTabIndex: (num: number) => void;
-};
-
-const AddExercise = ({ setTabIndex }: Props) => {
+const AddExercise = () => {
   const toast = useToast();
+  const { push } = useRouter();
   const {
     handleSubmit,
     register,
@@ -41,8 +39,8 @@ const AddExercise = ({ setTabIndex }: Props) => {
         isClosable: true,
       }),
     onSettled: () => {
-      setTabIndex(1);
       reset();
+      push("/exercise");
     },
   });
 
@@ -72,6 +70,21 @@ const AddExercise = ({ setTabIndex }: Props) => {
               {errors.name && errors.name.message}
             </FormErrorMessage>
           </FormControl>
+          <FormControl isInvalid={!!errors.name}>
+            <FormLabel htmlFor="name">Routine Type</FormLabel>
+            <Select
+              placeholder="Select option"
+              {...register("routineType", { required: "This is required" })}
+            >
+              <option value={RoutineTypeValues.Pull}>Pull</option>
+              <option value={RoutineTypeValues.Push}>Push</option>
+              <option value={RoutineTypeValues.Core}>Core</option>
+              <option value={RoutineTypeValues.Full}>Full</option>
+            </Select>
+            <FormErrorMessage>
+              {errors.name && errors.name.message}
+            </FormErrorMessage>
+          </FormControl>
           <FormControl isInvalid={!!errors.description}>
             <FormLabel htmlFor="description">Description</FormLabel>
             <Input
@@ -83,18 +96,7 @@ const AddExercise = ({ setTabIndex }: Props) => {
               {errors.description && errors.description.message}
             </FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={!!errors.name}>
-            <FormLabel htmlFor="name">Routine Type</FormLabel>
-            <Select placeholder="Select option" {...register("routineType")}>
-              <option value={RoutineTypeValues.Pull}>Pull</option>
-              <option value={RoutineTypeValues.Push}>Push</option>
-              <option value={RoutineTypeValues.Core}>Core</option>
-              <option value={RoutineTypeValues.Full}>Full</option>
-            </Select>
-            <FormErrorMessage>
-              {errors.name && errors.name.message}
-            </FormErrorMessage>
-          </FormControl>
+
           <Button
             mt={4}
             colorScheme="teal"
