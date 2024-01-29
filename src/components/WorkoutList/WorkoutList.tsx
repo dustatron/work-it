@@ -4,9 +4,7 @@ import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 import Footer from "../Footer";
 
-type Props = {};
-
-export default function WorkoutList({}: Props) {
+export default function WorkoutList() {
   const { push } = useRouter();
   const { isLoading, data: workoutData } = api.workout.listWorkouts.useQuery();
 

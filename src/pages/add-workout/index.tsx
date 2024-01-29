@@ -12,9 +12,7 @@ import {
 import { RoutineTypeValues, WorkoutSchema } from "~/utils/types";
 import { useRouter } from "next/router";
 
-type Props = {};
-
-function addWorkout({}: Props) {
+export default function AddWorkout() {
   const toast = useToast();
   const { push } = useRouter();
   const { mutate, isLoading: isCreateWorkoutLoading } =
@@ -106,5 +104,3 @@ function addWorkout({}: Props) {
     </form>
   );
 }
-
-export default addWorkout;

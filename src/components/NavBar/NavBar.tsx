@@ -133,7 +133,7 @@ export default function Simple() {
                 {sessionData && (
                   <Box p="1">
                     <Text fontWeight="bold" align="left" pl="2">
-                      {capitalize(sessionData.user?.name || "")}
+                      {capitalize(sessionData.user?.name ?? "")}
                     </Text>
                   </Box>
                 )}

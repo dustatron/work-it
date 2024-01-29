@@ -1,9 +1,7 @@
 import React from "react";
 import WorkoutList from "~/components/WorkoutList";
 
-type Props = {};
-
-function Workout({}: Props) {
+function Workout() {
   return <WorkoutList />;
 }
 

@@ -28,8 +28,6 @@ export default function ExerciseDetail() {
     id: query.id as string,
   });
 
-  console.log();
-
   return (
     <Stack spacing={2} p="2" width="100%">
       <Center>
@@ -83,7 +81,7 @@ export default function ExerciseDetail() {
             </Thead>
             <Tbody>
               {data?.sets.map((set) => (
-                <Tr>
+                <Tr key={set.id}>
                   <Td>{set.dateCreated.toDateString()}</Td>
                   <Td>{set.weight}</Td>
                   <Td isNumeric>{set.rep}</Td>

@@ -36,7 +36,7 @@ export const workoutRouter = createTRPCRouter({
       const { amount, name, routineType } = input;
       const selection = shuffle(exercise).slice(0, Number(amount));
 
-      const user = await ctx.session.user;
+      const user = ctx.session.user;
 
       return ctx.db.workout.create({
         data: {

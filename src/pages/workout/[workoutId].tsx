@@ -1,15 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import {
-  Box,
-  Button,
-  Container,
-  Heading,
-  useToast,
-  Text,
-  Stack,
-} from "@chakra-ui/react";
+import { Box, Button, Container, Heading, Text, Stack } from "@chakra-ui/react";
 import Footer from "~/components/Footer";
 import DeleteButton from "~/components/DeleteButton";
 import { capitalize } from "lodash";

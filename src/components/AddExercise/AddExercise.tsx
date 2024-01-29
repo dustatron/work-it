@@ -19,7 +19,6 @@ import {
 } from "~/utils/types";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { array } from "zod";
 
 const AddExercise = () => {
   const toast = useToast();
@@ -42,7 +41,6 @@ const AddExercise = () => {
       reset();
       push("/exercise");
     },
-    onSettled: () => {},
     onError: (data) => {
       toast({
         title: `Error`,
