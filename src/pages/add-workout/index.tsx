@@ -56,7 +56,7 @@ function addWorkout({}: Props) {
             placeholder="name"
             {...register("name", {
               required: "This is required",
-              minLength: { value: 4, message: "Minimum length should be 4" },
+              minLength: { value: 3, message: "Minimum length should be 3" },
             })}
           />
           <FormErrorMessage>
@@ -80,7 +80,10 @@ function addWorkout({}: Props) {
         </FormControl>
         <FormControl isInvalid={!!errors.name}>
           <FormLabel htmlFor="name">Routine Type</FormLabel>
-          <Select placeholder="Select option" {...register("routineType")}>
+          <Select
+            placeholder="Select option"
+            {...register("routineType", { required: "This is required" })}
+          >
             <option value={RoutineTypeValues.Pull}>Pull</option>
             <option value={RoutineTypeValues.Push}>Push</option>
             <option value={RoutineTypeValues.Core}>Core</option>
