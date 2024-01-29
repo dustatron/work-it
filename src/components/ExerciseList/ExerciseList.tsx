@@ -1,4 +1,4 @@
-import { Button, Link, Stack, Text } from "@chakra-ui/react";
+import { Button, Link, Stack } from "@chakra-ui/react";
 import React from "react";
 import ExerciseBar from "../ExerciseBar";
 import { Exercise } from "@prisma/client";

@@ -126,7 +126,7 @@ export default function Simple() {
               >
                 <Avatar
                   size={"sm"}
-                  src={sessionData?.user.image || "/temp-profile.png"}
+                  src={sessionData?.user.image ?? "/temp-profile.png"}
                 />
               </MenuButton>
               <MenuList>

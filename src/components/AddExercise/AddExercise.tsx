@@ -22,7 +22,7 @@ import { useRouter } from "next/router";
 
 const AddExercise = () => {
   const toast = useToast();
-  const { push } = useRouter();
+  const router = useRouter();
   const {
     handleSubmit,
     register,
@@ -39,7 +39,7 @@ const AddExercise = () => {
         isClosable: true,
       });
       reset();
-      push("/exercise");
+      router.push("/exercise");
     },
     onError: (data) => {
       toast({

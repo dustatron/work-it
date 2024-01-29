@@ -1,8 +1,7 @@
-import { Box, Button, Card, Center, Flex, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Card, Center, Stack, Text } from "@chakra-ui/react";
 import { Exercise } from "@prisma/client";
 import { capitalize } from "lodash";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 
 type Props = {

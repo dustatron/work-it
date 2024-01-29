@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Center,
   Heading,
@@ -8,7 +7,6 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,

@@ -1,4 +1,4 @@
-import { Box, Select, Stack, useToast } from "@chakra-ui/react";
+import { Select, Stack, useToast } from "@chakra-ui/react";
 import React from "react";
 import { api } from "~/utils/api";
 import { useForm } from "react-hook-form";

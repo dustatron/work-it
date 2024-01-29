@@ -14,7 +14,7 @@ export const exerciseRouter = createTRPCRouter({
   addExercise: protectedProcedure
     .input(exerciseSchema)
     .mutation(async ({ ctx, input }) => {
-      const user = await ctx.session.user;
+      const user = ctx.session.user;
       return ctx.db.exercise.create({
         data: {
           name: input.name,

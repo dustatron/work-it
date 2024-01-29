@@ -1,4 +1,4 @@
-import { Box, Button, Center, Heading, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
@@ -6,7 +6,7 @@ import Footer from "../Footer";
 
 export default function WorkoutList() {
   const { push } = useRouter();
-  const { isLoading, data: workoutData } = api.workout.listWorkouts.useQuery();
+  const { data: workoutData } = api.workout.listWorkouts.useQuery();
 
   return (
     <Stack p="3">
