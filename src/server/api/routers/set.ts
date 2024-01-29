@@ -8,8 +8,6 @@ import {
 
 export const setRouter = createTRPCRouter({
   listSets: publicProcedure.query(({ ctx }) => {
-    return ctx.db.set.findAll({
-      orderBy: { createdAt: "desc" },
-    });
+    return ctx.db.set.findMany();
   }),
 });
