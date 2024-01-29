@@ -1,6 +1,8 @@
-# Create T3 App
+# WORK IT
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This is a simple web app intended to make fast and simple workouts randomly.
+
+This app was bootstrapped using the T3 tooling.
 
 ## What's next? How do I make an app with this?
 
