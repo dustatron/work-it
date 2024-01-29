@@ -22,8 +22,8 @@ export default function ExerciseList({ exerciseData }: Props) {
           <ExerciseBar key={exercise.id} exercise={exercise} />
         ))}
       </Stack>
-      <Footer>
-        <Link href="/add-workout">
+      <Footer isCenter>
+        <Link href="/add-exercise">
           <Button colorScheme="twitter">Add Exercise</Button>{" "}
         </Link>
       </Footer>

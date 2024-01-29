@@ -47,9 +47,12 @@ export default function WorkoutDetail() {
           ))}
         </Stack>
         <Footer>
-          {query.workoutId && (
+          {workoutData && (
             <>
-              <DeleteButton workoutId={query.workoutId as string} />
+              <DeleteButton
+                workoutId={workoutData.id}
+                title={workoutData.name}
+              />
               <Button colorScheme="twitter">Edit</Button>
             </>
           )}

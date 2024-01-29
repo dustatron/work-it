@@ -62,7 +62,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
-    Workout       Workout[]
+    workout       Workout[]
     Set           Set[]
     Exercise      Exercise[]
 }

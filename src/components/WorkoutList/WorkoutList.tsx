@@ -11,13 +11,13 @@ export default function WorkoutList({}: Props) {
   const { isLoading, data: workoutData } = api.workout.listWorkouts.useQuery();
 
   return (
-    <Stack>
+    <Stack p="3">
       {workoutData?.map((workout) => (
         <Button onClick={() => push(`/workout/${workout.id}`)} key={workout.id}>
           {workout.name}
         </Button>
       ))}
-      <Footer>
+      <Footer isCenter>
         <Button colorScheme="twitter" onClick={() => push("/add-workout")}>
           Add Workout
         </Button>

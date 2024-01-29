@@ -6,6 +6,7 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { workoutSchema } from "~/utils/types";
+import shuffle from "lodash/shuffle";
 
 export const workoutRouter = createTRPCRouter({
   listWorkouts: publicProcedure.query(({ ctx }) => {
@@ -26,7 +27,7 @@ export const workoutRouter = createTRPCRouter({
         where: { routineType: input.routineType },
       });
       const { amount, name, routineType } = input;
-      const selection = exercise.slice(0, Number(amount));
+      const selection = shuffle(exercise).slice(0, Number(amount));
       const user = await ctx.session.user;
 
       return ctx.db.workout.create({

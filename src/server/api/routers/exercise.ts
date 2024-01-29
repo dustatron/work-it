@@ -27,6 +27,14 @@ export const exerciseRouter = createTRPCRouter({
   getExercise: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.exercise.findFirst({ where: { id: input.id } });
+      return ctx.db.exercise.findFirst({
+        where: { id: input.id },
+        include: { Workout: true, user: true, sets: true },
+      });
+    }),
+  deleteExercise: protectedProcedure
+    .input(z.object({ exerciseId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.exercise.delete({ where: { id: input.exerciseId } });
     }),
 });

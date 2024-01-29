@@ -19,6 +19,7 @@ import {
 } from "~/utils/types";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { array } from "zod";
 
 const AddExercise = () => {
   const toast = useToast();
@@ -30,17 +31,26 @@ const AddExercise = () => {
     reset,
   } = useForm<ExerciseSchema>({ resolver: zodResolver(exerciseSchema) });
   const { mutate } = api.exercise.addExercise.useMutation({
-    onSuccess: (data) =>
+    onSuccess: (data) => {
       toast({
         title: `Exercise created`,
         description: `${data.name} was created.`,
         status: "success",
         duration: 9000,
         isClosable: true,
-      }),
-    onSettled: () => {
+      });
       reset();
       push("/exercise");
+    },
+    onSettled: () => {},
+    onError: (data) => {
+      toast({
+        title: `Error`,
+        description: `${data.message}`,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
     },
   });
 

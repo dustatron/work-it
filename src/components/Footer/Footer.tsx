@@ -1,13 +1,13 @@
 import { Box, Stack } from "@chakra-ui/react";
 import React, { ReactNode } from "react";
 
-type Props = { children: ReactNode };
+type Props = { children: ReactNode; isCenter?: boolean };
 
-export default function Footer({ children }: Props) {
+export default function Footer({ children, isCenter }: Props) {
   return (
     <Stack
       direction="row"
-      justifyContent="center"
+      justifyContent={isCenter ? "center" : "space-between"}
       alignItems="center"
       position="fixed"
       bottom="0"

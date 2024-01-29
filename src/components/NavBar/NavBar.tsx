@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   Flex,
@@ -20,6 +18,8 @@ import {
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { capitalize } from "lodash";
 
 interface Props {
   children: React.ReactNode;
@@ -35,6 +35,7 @@ const Links = [
 const NavLink = (props: Props) => {
   const { children, link } = props;
   const { data: sessionData } = useSession();
+  console.log("session", sessionData);
 
   return (
     <Box
@@ -56,7 +57,37 @@ const NavLink = (props: Props) => {
 export default function Simple() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: sessionData } = useSession();
+  const router = useRouter();
 
+  const getTitle = (route: string) => {
+    switch (route) {
+      case "/exercise":
+        return "Exercise List";
+
+      case "/add-exercise":
+        return "Add Exercise";
+
+      case "/exercise/[id]":
+        return "Exercise Details";
+
+      case "/add-exercise":
+        return "Add Exercise";
+
+      case "/workout":
+        return "Workout List";
+
+      case "/add-workout":
+        return "Add Workout";
+
+      case "/workout/[workoutId]":
+        return "Your Workout";
+
+      default:
+        return "Work It";
+    }
+  };
+
+  const title = getTitle(router.route);
   return (
     <>
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
@@ -70,7 +101,7 @@ export default function Simple() {
           />
           <HStack spacing={8} alignItems={"center"}>
             <Link href="/">
-              <Box>Work It</Box>
+              <Box>{title}</Box>
             </Link>
             <HStack
               as={"nav"}
@@ -95,16 +126,14 @@ export default function Simple() {
               >
                 <Avatar
                   size={"sm"}
-                  src={
-                    "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                  }
+                  src={sessionData?.user.image || "/temp-profile.png"}
                 />
               </MenuButton>
               <MenuList>
                 {sessionData && (
                   <Box p="1">
-                    <Text fontWeight="bold" align="center">
-                      {sessionData.user?.name}
+                    <Text fontWeight="bold" align="left" pl="2">
+                      {capitalize(sessionData.user?.name || "")}
                     </Text>
                   </Box>
                 )}
