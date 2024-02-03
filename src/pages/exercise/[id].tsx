@@ -12,6 +12,7 @@ import {
   Td,
   TableCaption,
   TableContainer,
+  Box,
 } from "@chakra-ui/react";
 import { capitalize } from "lodash";
 import { useRouter } from "next/router";
@@ -53,6 +54,22 @@ export default function ExerciseDetail() {
           <Text>
             {data?.dateCreated.getMonth()}/{data?.dateCreated.getDate()}/
             {data?.dateCreated.getFullYear()}
+          </Text>
+        </Stack>
+        <Stack direction="row">
+          <Text fontWeight="bold">region: </Text>
+          <Text>
+            {data?.region.map((reg) => (
+              <Box key={reg}>{reg}</Box>
+            ))}
+          </Text>
+        </Stack>
+        <Stack direction="row">
+          <Text fontWeight="bold">muscle group: </Text>
+          <Text>
+            {data?.muscleGroup.map((mus) => (
+              <Box key={mus}>{mus}</Box>
+            ))}
           </Text>
         </Stack>
         <Stack direction="row">

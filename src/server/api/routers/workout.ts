@@ -5,7 +5,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { RoutineTypeValues, workoutSchema } from "~/utils/types";
+import { workoutSchema } from "~/utils/types";
 import shuffle from "lodash/shuffle";
 
 export const workoutRouter = createTRPCRouter({
@@ -25,16 +25,13 @@ export const workoutRouter = createTRPCRouter({
     .input(workoutSchema)
     .mutation(async ({ ctx, input }) => {
       let exercise;
-      if (input.routineType === RoutineTypeValues.Full) {
-        exercise = await ctx.db.exercise.findMany();
-      } else {
-        exercise = await ctx.db.exercise.findMany({
-          where: { routineType: input.routineType },
-        });
-      }
 
-      const { amount, name, routineType } = input;
-      const selection = shuffle(exercise).slice(0, Number(amount));
+      exercise = await ctx.db.exercise.findMany({
+        where: { routineType: input.routineType },
+      });
+
+      const { name, routineType } = input;
+      const selection = shuffle(exercise).slice(0, 4);
 
       const user = ctx.session.user;
 
