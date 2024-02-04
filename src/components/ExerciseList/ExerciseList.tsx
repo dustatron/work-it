@@ -24,7 +24,7 @@ export default function ExerciseList({ exerciseData }: Props) {
       </Stack>
       <Footer isCenter>
         <Link href="/add-exercise">
-          <Button colorScheme="twitter">Add Exercise</Button>{" "}
+          <Button colorScheme="twitter">Add Exercise</Button>
         </Link>
       </Footer>
     </Stack>

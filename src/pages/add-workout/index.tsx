@@ -1,5 +1,5 @@
-import { Select, Stack, useToast } from "@chakra-ui/react";
-import React from "react";
+import { Box, Select, Stack, useToast } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { useForm } from "react-hook-form";
 import {
@@ -9,12 +9,34 @@ import {
   Input,
   Button,
 } from "@chakra-ui/react";
-import { RoutineTypeValues, WorkoutSchema } from "~/utils/types";
+import {
+  Exercise,
+  MuscleGroup,
+  MusicGroupType,
+  Region,
+  RegionType,
+  WorkoutSchema,
+} from "~/utils/types";
 import { useRouter } from "next/router";
+import ExerciseBar from "~/components/ExerciseBar";
 
 export default function AddWorkout() {
   const toast = useToast();
   const { push } = useRouter();
+
+  const [exerciseList, setExerciseList] = useState<Exercise[]>([]);
+  const [selectedExerciseList, setSelectedExerciseList] = useState<Exercise[]>(
+    []
+  );
+
+  const { data: mainExerciseList } = api.exercise.listExercises.useQuery();
+
+  useEffect(() => {
+    if (mainExerciseList && !exerciseList.length) {
+      setExerciseList(mainExerciseList);
+    }
+  }, [mainExerciseList]);
+
   const { mutate, isLoading: isCreateWorkoutLoading } =
     api.workout.addWorkout.useMutation({
       onSuccess: (data) => {
@@ -32,8 +54,6 @@ export default function AddWorkout() {
 
   const onSubmit = (values: WorkoutSchema) => {
     mutate({
-      amount: values.amount,
-      routineType: values.routineType,
       name: values.name,
     });
   };
@@ -42,7 +62,50 @@ export default function AddWorkout() {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
+    getValues,
+    setValue,
   } = useForm<WorkoutSchema>();
+
+  const updateFilter = () => {
+    const formValues = getValues();
+    const muscleGroup = formValues.muscleGroup;
+    const region = formValues.region;
+    let result: Exercise[] = mainExerciseList || [];
+
+    const muscleGroupFilter: Exercise[] =
+      mainExerciseList?.filter((exercise) => {
+        return exercise.muscleGroup.includes(muscleGroup?.toLowerCase() || "");
+      }) || [];
+
+    const regionFilter: Exercise[] =
+      mainExerciseList?.filter((exercise) =>
+        exercise.region.includes(region?.toLowerCase() || "")
+      ) || [];
+    result = [...regionFilter];
+
+    if (muscleGroup && region) {
+      setExerciseList([...muscleGroupFilter, ...regionFilter]);
+    } else if (muscleGroup) {
+      setExerciseList([...muscleGroupFilter]);
+    } else if (region) {
+      setExerciseList([...regionFilter]);
+    } else {
+      setExerciseList(mainExerciseList || []);
+    }
+  };
+
+  const addExercise = (exercise: Exercise) => {
+    setSelectedExerciseList([...selectedExerciseList, exercise]);
+    const selectedIds = selectedExerciseList.map((ex) => ex.id);
+    const mainListUpdate = mainExerciseList?.filter(
+      (ex) => ex.id != exercise.id
+    );
+    const updateList =
+      mainListUpdate?.filter((ex) => !selectedIds.includes(ex.id)) || [];
+
+    console.log(updateList);
+    setExerciseList(updateList);
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -61,36 +124,57 @@ export default function AddWorkout() {
             {errors.name && errors.name.message}
           </FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={!!errors.amount}>
-          <FormLabel htmlFor="amount">Amount</FormLabel>
-          <Input
-            id="amount"
-            type="number"
-            defaultValue={4}
-            placeholder="amount"
-            {...register("amount", {
-              required: "This is required",
-            })}
-          />
-          <FormErrorMessage>
-            {errors.amount && errors.amount.message}
-          </FormErrorMessage>
-        </FormControl>
-        <FormControl isInvalid={!!errors.name}>
-          <FormLabel htmlFor="name">Routine Type</FormLabel>
+        <FormControl isInvalid={!!errors.muscleGroup}>
+          <FormLabel htmlFor="muscleGroupd">Muscle Group</FormLabel>
           <Select
             placeholder="Select option"
-            {...register("routineType", { required: "This is required" })}
+            {...register("muscleGroup")}
+            onChange={(e) => {
+              setValue("muscleGroup", e.target.value as MusicGroupType);
+              updateFilter();
+            }}
           >
-            <option value={RoutineTypeValues.Pull}>Pull</option>
-            <option value={RoutineTypeValues.Push}>Push</option>
-            <option value={RoutineTypeValues.Core}>Core</option>
-            <option value={RoutineTypeValues.Full}>Full</option>
+            <option value={MuscleGroup.Pull}>Pull</option>
+            <option value={MuscleGroup.Push}>Push</option>
+            <option value={MuscleGroup.Core}>Core</option>
+            <option value={MuscleGroup.Cardio}>Cardio</option>
           </Select>
           <FormErrorMessage>
-            {errors.name && errors.name.message}
+            {errors.muscleGroup && errors.muscleGroup.message}
           </FormErrorMessage>
         </FormControl>
+        <FormControl isInvalid={!!errors.region}>
+          <FormLabel htmlFor="Region">Region</FormLabel>
+          <Select
+            placeholder="Select option"
+            {...register("region")}
+            onChange={(e) => {
+              setValue("region", e.target.value as RegionType);
+              updateFilter();
+            }}
+          >
+            <option value={Region.Core}>Core</option>
+            <option value={Region.Upper}>Upper</option>
+            <option value={Region.Lower}>Lower</option>
+            <option value={Region.FullBody}>Full Body</option>
+          </Select>
+          <FormErrorMessage>
+            {errors.region && errors.region.message}
+          </FormErrorMessage>
+        </FormControl>
+        <Stack>
+          {selectedExerciseList.map((exercise) => (
+            <ExerciseBar key={exercise.id} exercise={exercise} isRemoving />
+          ))}
+          {exerciseList.map((exercise) => (
+            <ExerciseBar
+              key={exercise.id}
+              exercise={exercise}
+              isAdding
+              addExercise={addExercise}
+            />
+          ))}
+        </Stack>
 
         <Button
           mt={4}

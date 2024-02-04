@@ -6,9 +6,17 @@ import React from "react";
 
 type Props = {
   exercise: Exercise;
+  isAdding?: boolean;
+  isRemoving?: boolean;
+  addExercise?: (exercise: Exercise) => void;
 };
 
-const ExerciseBar = ({ exercise }: Props) => {
+const ExerciseBar = ({
+  exercise,
+  isAdding,
+  isRemoving,
+  addExercise,
+}: Props) => {
   return (
     <Card p="2" w="100%">
       <Stack direction="row" justifyContent="space-between">
@@ -18,11 +26,26 @@ const ExerciseBar = ({ exercise }: Props) => {
           </Text>
         </Center>
         <Box>
-          <Link href={`/exercise/${exercise.id}`}>
-            <Button variant="ghost">
-              <Text fontSize="lg">⚙️</Text>
+          {!isAdding && (
+            <Link href={`/exercise/${exercise.id}`}>
+              <Button variant="ghost">
+                <Text fontSize="lg">⚙️</Text>
+              </Button>
+            </Link>
+          )}
+          {isAdding && (
+            <Button
+              variant="ghost"
+              onClick={() => addExercise && addExercise(exercise)}
+            >
+              <Text fontSize="lg">➕</Text>
             </Button>
-          </Link>
+          )}
+          {isRemoving && (
+            <Button variant="ghost">
+              <Text fontSize="lg">🗑️</Text>
+            </Button>
+          )}
         </Box>
       </Stack>
     </Card>

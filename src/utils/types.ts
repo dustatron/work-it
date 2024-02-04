@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// Depreciated
 export const RoutineTypeValues = {
   Push: "PUSH",
   Pull: "PULL",
@@ -7,6 +8,24 @@ export const RoutineTypeValues = {
   Full: "FULL",
 };
 export type RoutineType = keyof typeof RoutineTypeValues;
+
+export const MuscleGroup = {
+  Push: "PUSH",
+  Pull: "PULL",
+  Core: "CORE",
+  Cardio: "CARDIO",
+};
+
+export type MusicGroupType = keyof typeof MuscleGroup;
+
+export const Region = {
+  Upper: "UPPER",
+  Lower: "LOWER",
+  Core: "CORE",
+  FullBody: "FULL_BODY",
+};
+
+export type RegionType = keyof typeof Region;
 
 export const exerciseSchema = z.object({
   id: z.string().optional(),
@@ -19,7 +38,9 @@ export type ExerciseSchema = z.infer<typeof exerciseSchema>;
 
 export const workoutSchema = z.object({
   name: z.string().min(1),
-  routineType: z.custom<RoutineType>(),
+  muscleGroup: z.custom<MusicGroupType>().optional(),
+  region: z.custom<RegionType>().optional(),
+  exercises: z.array(z.custom<Exercise>()).optional(),
 });
 
 export type WorkoutSchema = z.infer<typeof workoutSchema>;
@@ -32,4 +53,6 @@ export type Exercise = {
   dateCreated: Date;
   workoutId: string | null;
   userId: string;
+  muscleGroup: string[];
+  region: string[];
 };
