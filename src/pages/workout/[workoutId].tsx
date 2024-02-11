@@ -6,9 +6,11 @@ import Footer from "~/components/Footer";
 import DeleteButton from "~/components/DeleteButton";
 import { capitalize } from "lodash";
 import ExerciseBar from "~/components/ExerciseBar";
+import { useSession } from "next-auth/react"
 
 export default function WorkoutDetail() {
   const { query } = useRouter();
+  const { data: session, status } = useSession()
   const { isLoading, data: workoutData } = api.workout.getWorkout.useQuery(
     { workoutId: query?.workoutId as string },
     { enabled: !!query?.workoutId }
@@ -37,17 +39,19 @@ export default function WorkoutDetail() {
             <ExerciseBar key={exercise.id} exercise={exercise} />
           ))}
         </Stack>
-        <Footer>
-          {workoutData && (
-            <>
-              <DeleteButton
-                workoutId={workoutData.id}
-                title={workoutData.name}
-              />
-              <Button colorScheme="twitter">Edit</Button>
-            </>
-          )}
-        </Footer>
+        {status === "authenticated" && (
+          <Footer>
+            {workoutData && (
+              <>
+                <DeleteButton
+                  workoutId={workoutData.id}
+                  title={workoutData.name}
+                />
+                <Button colorScheme="twitter">Edit</Button>
+              </>
+            )}
+          </Footer>
+        )}
       </Container>
     );
   }

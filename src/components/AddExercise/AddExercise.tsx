@@ -71,8 +71,6 @@ const AddExercise = () => {
   const muscleOptions = Object.values(MuscleGroup).map((option) => ({ value: option, label: option }))
   const regionOptions = Object.values(Region).map((option) => ({ value: option, label: option }))
 
-  console.log("errors", errors)
-  console.log("values", getValues())
   return (
     <Stack>
       <Heading>Add Exercise</Heading>
