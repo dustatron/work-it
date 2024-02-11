@@ -35,7 +35,6 @@ const Links = [
 const NavLink = (props: Props) => {
   const { children, link } = props;
   const { data: sessionData } = useSession();
-  console.log("session", sessionData);
 
   return (
     <Box

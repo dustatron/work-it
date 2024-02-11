@@ -1,5 +1,7 @@
-import { Box, Select, Stack, useToast } from "@chakra-ui/react";
+import { Box, Select, Stack, useToast, Text, Card } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import filter from "lodash/filter";
+import includes from "lodash/includes";
 import { api } from "~/utils/api";
 import { useForm } from "react-hook-form";
 import {
@@ -23,7 +25,6 @@ import ExerciseBar from "~/components/ExerciseBar";
 export default function AddWorkout() {
   const toast = useToast();
   const { push } = useRouter();
-
   const [exerciseList, setExerciseList] = useState<Exercise[]>([]);
   const [selectedExerciseList, setSelectedExerciseList] = useState<Exercise[]>(
     []
@@ -53,9 +54,12 @@ export default function AddWorkout() {
     });
 
   const onSubmit = (values: WorkoutSchema) => {
-    mutate({
-      name: values.name,
-    });
+    if (!!selectedExerciseList.length) {
+      mutate({
+        name: values.name,
+        exercises: selectedExerciseList,
+      });
+    }
   };
 
   const {
@@ -70,102 +74,162 @@ export default function AddWorkout() {
     const formValues = getValues();
     const muscleGroup = formValues.muscleGroup;
     const region = formValues.region;
-    let result: Exercise[] = mainExerciseList || [];
+    const selectedItemsRemoved = filter(
+      mainExerciseList,
+      (item: Exercise) => !includes(selectedExerciseList, item)
+    );
 
-    const muscleGroupFilter: Exercise[] =
-      mainExerciseList?.filter((exercise) => {
-        return exercise.muscleGroup.includes(muscleGroup?.toLowerCase() || "");
-      }) || [];
-
-    const regionFilter: Exercise[] =
-      mainExerciseList?.filter((exercise) =>
-        exercise.region.includes(region?.toLowerCase() || "")
-      ) || [];
-    result = [...regionFilter];
-
-    if (muscleGroup && region) {
-      setExerciseList([...muscleGroupFilter, ...regionFilter]);
-    } else if (muscleGroup) {
-      setExerciseList([...muscleGroupFilter]);
-    } else if (region) {
-      setExerciseList([...regionFilter]);
-    } else {
-      setExerciseList(mainExerciseList || []);
-    }
+    const filtered: Exercise[] = filter(
+      selectedItemsRemoved,
+      (item: Exercise) => {
+        if (muscleGroup && region) {
+          return (
+            includes(item.muscleGroup, muscleGroup?.toLowerCase()) &&
+            includes(item.region, region?.toLowerCase())
+          );
+        } else if (muscleGroup) {
+          return includes(item.muscleGroup, muscleGroup?.toLowerCase());
+        } else if (region) {
+          return includes(item.region, region?.toLowerCase());
+        } else {
+          return true;
+        }
+      }
+    );
+    setExerciseList(filtered);
   };
 
   const addExercise = (exercise: Exercise) => {
     setSelectedExerciseList([...selectedExerciseList, exercise]);
     const selectedIds = selectedExerciseList.map((ex) => ex.id);
-    const mainListUpdate = mainExerciseList?.filter(
-      (ex) => ex.id != exercise.id
-    );
+    const mainListUpdate = exerciseList?.filter((ex) => ex.id != exercise.id);
     const updateList =
       mainListUpdate?.filter((ex) => !selectedIds.includes(ex.id)) || [];
 
-    console.log(updateList);
     setExerciseList(updateList);
+  };
+
+  const removeExercise = (exercise: Exercise) => {
+    const trimmedList: Exercise[] = selectedExerciseList.filter(
+      (item) => item.id != exercise.id
+    );
+    setExerciseList([...exerciseList, exercise]);
+    setSelectedExerciseList(trimmedList);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={5}>
-        <FormControl isInvalid={!!errors.name}>
-          <FormLabel htmlFor="name">Workout Name</FormLabel>
-          <Input
-            id="name"
-            placeholder="name"
-            {...register("name", {
-              required: "This is required",
-              minLength: { value: 3, message: "Minimum length should be 3" },
-            })}
-          />
-          <FormErrorMessage>
-            {errors.name && errors.name.message}
-          </FormErrorMessage>
-        </FormControl>
-        <FormControl isInvalid={!!errors.muscleGroup}>
-          <FormLabel htmlFor="muscleGroupd">Muscle Group</FormLabel>
-          <Select
-            placeholder="Select option"
-            {...register("muscleGroup")}
-            onChange={(e) => {
-              setValue("muscleGroup", e.target.value as MusicGroupType);
-              updateFilter();
-            }}
-          >
-            <option value={MuscleGroup.Pull}>Pull</option>
-            <option value={MuscleGroup.Push}>Push</option>
-            <option value={MuscleGroup.Core}>Core</option>
-            <option value={MuscleGroup.Cardio}>Cardio</option>
-          </Select>
-          <FormErrorMessage>
-            {errors.muscleGroup && errors.muscleGroup.message}
-          </FormErrorMessage>
-        </FormControl>
-        <FormControl isInvalid={!!errors.region}>
-          <FormLabel htmlFor="Region">Region</FormLabel>
-          <Select
-            placeholder="Select option"
-            {...register("region")}
-            onChange={(e) => {
-              setValue("region", e.target.value as RegionType);
-              updateFilter();
-            }}
-          >
-            <option value={Region.Core}>Core</option>
-            <option value={Region.Upper}>Upper</option>
-            <option value={Region.Lower}>Lower</option>
-            <option value={Region.FullBody}>Full Body</option>
-          </Select>
-          <FormErrorMessage>
-            {errors.region && errors.region.message}
-          </FormErrorMessage>
-        </FormControl>
+      <Stack spacing={2}>
+        <Card
+          p="4"
+          marginTop="2"
+          boxShadow="md"
+          bg="gray.50"
+          border="2px"
+          borderColor="gray.200"
+        >
+          <FormControl isInvalid={!!errors.name}>
+            <Text as="h2" fontWeight="bold" fontSize="x-large" align="center">
+              Workout Details
+            </Text>
+            <FormLabel htmlFor="name">Workout Name</FormLabel>
+            <Input
+              id="name"
+              placeholder="name"
+              bg="white"
+              borderColor="gray.200"
+              {...register("name", {
+                required: "This is required",
+                minLength: { value: 3, message: "Minimum length should be 3" },
+              })}
+            />
+            <FormErrorMessage>
+              {errors.name && errors.name.message}
+            </FormErrorMessage>
+          </FormControl>
+
+          <Stack direction="row">
+            <FormControl isInvalid={!!errors.muscleGroup}>
+              <FormLabel htmlFor="muscleGroupd">Muscle Group</FormLabel>
+              <Select
+                bg="white"
+                borderColor="gray.200"
+                placeholder="Select option"
+                {...register("muscleGroup")}
+                onChange={(e) => {
+                  setValue("muscleGroup", e.target.value as MusicGroupType);
+                  updateFilter();
+                }}
+              >
+                <option value={MuscleGroup.Pull}>Pull</option>
+                <option value={MuscleGroup.Push}>Push</option>
+                <option value={MuscleGroup.Core}>Core</option>
+                <option value={MuscleGroup.Cardio}>Cardio</option>
+              </Select>
+              <FormErrorMessage>
+                {errors.muscleGroup && errors.muscleGroup.message}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={!!errors.region}>
+              <FormLabel htmlFor="Region">Region</FormLabel>
+              <Select
+                bg="white"
+                borderColor="gray.200"
+                placeholder="Select option"
+                {...register("region")}
+                onChange={(e) => {
+                  setValue("region", e.target.value as RegionType);
+                  updateFilter();
+                }}
+              >
+                <option value={Region.Core}>Core</option>
+                <option value={Region.Upper}>Upper</option>
+                <option value={Region.Lower}>Lower</option>
+                <option value={Region.FullBody}>Full Body</option>
+              </Select>
+              <FormErrorMessage>
+                {errors.region && errors.region.message}
+              </FormErrorMessage>
+            </FormControl>
+          </Stack>
+        </Card>
+        <Button
+          colorScheme="teal"
+          isLoading={isSubmitting || isCreateWorkoutLoading}
+          type="submit"
+          isDisabled={!selectedExerciseList.length}
+        >
+          Create Workout
+        </Button>
         <Stack>
-          {selectedExerciseList.map((exercise) => (
-            <ExerciseBar key={exercise.id} exercise={exercise} isRemoving />
-          ))}
+          <Card
+            p="4"
+            boxShadow="md"
+            bg="gray.50"
+            border="2px"
+            borderColor="gray.200"
+          >
+            <Box>
+              <Text as="h2" fontWeight="bold" fontSize="x-large" align="center">
+                Selected Exercises
+              </Text>
+            </Box>
+            <Stack>
+              {!selectedExerciseList.length && (
+                <Box>
+                  <Text>No Exercises Selected </Text>
+                </Box>
+              )}
+              {selectedExerciseList.map((exercise) => (
+                <ExerciseBar
+                  key={exercise.id}
+                  exercise={exercise}
+                  isRemoving
+                  removeExercise={removeExercise}
+                />
+              ))}
+            </Stack>
+          </Card>
           {exerciseList.map((exercise) => (
             <ExerciseBar
               key={exercise.id}
@@ -175,15 +239,6 @@ export default function AddWorkout() {
             />
           ))}
         </Stack>
-
-        <Button
-          mt={4}
-          colorScheme="teal"
-          isLoading={isSubmitting || isCreateWorkoutLoading}
-          type="submit"
-        >
-          Create Workout
-        </Button>
       </Stack>
     </form>
   );

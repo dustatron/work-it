@@ -24,25 +24,20 @@ export const workoutRouter = createTRPCRouter({
   addWorkout: protectedProcedure
     .input(workoutSchema)
     .mutation(async ({ ctx, input }) => {
-      let exercise;
-
-      exercise = await ctx.db.exercise.findMany({
-        where: { routineType: input.routineType },
-      });
-
-      const { name, routineType } = input;
-      const selection = shuffle(exercise).slice(0, 4);
-
       const user = ctx.session.user;
+      const { name, exercises } = input;
+      const selected = exercises?.map((item) => ({ id: item.id }));
 
       return ctx.db.workout.create({
         data: {
           name,
-          routineType,
-          exercises: { connect: selection },
           userId: user.id,
+          exercises: {
+            connect: selected,
+          },
         },
       });
+ 
     }),
   deleteWorkout: protectedProcedure
     .input(z.object({ workoutId: z.string() }))

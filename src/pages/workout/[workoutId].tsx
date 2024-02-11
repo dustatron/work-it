@@ -29,7 +29,6 @@ export default function WorkoutDetail() {
             borderBottom="1px solid black"
             p="2"
           >
-            <Text>Routine: {workoutData.routineType}</Text>
             <Text># Exercises: {workoutData.exercises.length}</Text>
           </Stack>
         </Box>

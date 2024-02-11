@@ -109,7 +109,6 @@ model Workout {
     dateCreated DateTime   @default(now())
     sets        Set[]
     exercises   Exercise[]
-    routineType String
     user        User       @relation(fields: [userId], references: [id])
     userId      String
 }

@@ -9,6 +9,7 @@ type Props = {
   isAdding?: boolean;
   isRemoving?: boolean;
   addExercise?: (exercise: Exercise) => void;
+  removeExercise?: (exercise: Exercise) => void;
 };
 
 const ExerciseBar = ({
@@ -16,6 +17,7 @@ const ExerciseBar = ({
   isAdding,
   isRemoving,
   addExercise,
+  removeExercise
 }: Props) => {
   return (
     <Card p="2" w="100%">
@@ -42,7 +44,7 @@ const ExerciseBar = ({
             </Button>
           )}
           {isRemoving && (
-            <Button variant="ghost">
+            <Button variant="ghost" onClick={() => removeExercise && removeExercise(exercise)}>
               <Text fontSize="lg">🗑️</Text>
             </Button>
           )}
