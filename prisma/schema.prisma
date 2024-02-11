@@ -78,7 +78,7 @@ model VerificationToken {
 model Exercise {
     id          String   @id @default(cuid())
     name        String
-    routineType String
+    routineType String?
     description String?
     dateCreated DateTime @default(now())
     sets        Set[]
