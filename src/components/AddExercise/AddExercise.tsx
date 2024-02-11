@@ -61,7 +61,7 @@ const AddExercise = () => {
     console.log("test")
     mutate({
       name: values.name,
-      routineType: values.routineType || "",
+      routineType: values.routineType ?? "",
       description: values.description,
       muscleGroup: values.muscleGroup,
       region: values.region
