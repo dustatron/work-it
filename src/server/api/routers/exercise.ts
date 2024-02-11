@@ -15,12 +15,16 @@ export const exerciseRouter = createTRPCRouter({
     .input(exerciseSchema)
     .mutation(async ({ ctx, input }) => {
       const user = ctx.session.user;
+      const muscleGroupFiltered = input.muscleGroup.map(item => item.value)
+      const regionFiltered = input.region.map(item => item.value)
       return ctx.db.exercise.create({
         data: {
           name: input.name,
           description: input.description,
-          routineType: input.routineType,
           userId: user.id,
+          muscleGroup: muscleGroupFiltered,
+          region: regionFiltered,
+          routineType: input.routineType
         },
       });
     }),

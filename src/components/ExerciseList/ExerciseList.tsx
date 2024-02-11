@@ -1,4 +1,4 @@
-import { Button, Link, Stack } from "@chakra-ui/react";
+import { Box, Button, Link, Stack } from "@chakra-ui/react";
 import React from "react";
 import ExerciseBar from "../ExerciseBar";
 import { Exercise } from "@prisma/client";
@@ -10,7 +10,7 @@ type Props = {
 
 export default function ExerciseList({ exerciseData }: Props) {
   return (
-    <Stack h="99vh" w="100%">
+    <Stack h="99vh" w="100%" marginBottom="25px">
       <Stack
         minH="90%"
         w="100%"
@@ -21,6 +21,7 @@ export default function ExerciseList({ exerciseData }: Props) {
         {exerciseData?.map((exercise) => (
           <ExerciseBar key={exercise.id} exercise={exercise} />
         ))}
+        <Box p="10"></Box>
       </Stack>
       <Footer isCenter>
         <Link href="/add-exercise">
