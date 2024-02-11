@@ -3,12 +3,14 @@ import React from "react";
 import ExerciseBar from "../ExerciseBar";
 import { Exercise } from "@prisma/client";
 import Footer from "../Footer";
+import { useSession } from "next-auth/react"
 
 type Props = {
   exerciseData?: Exercise[];
 };
 
 export default function ExerciseList({ exerciseData }: Props) {
+  const { status } = useSession()
   return (
     <Stack h="99vh" w="100%" marginBottom="25px">
       <Stack
@@ -23,11 +25,13 @@ export default function ExerciseList({ exerciseData }: Props) {
         ))}
         <Box p="10"></Box>
       </Stack>
-      <Footer isCenter>
-        <Link href="/add-exercise">
-          <Button colorScheme="twitter">Add Exercise</Button>
-        </Link>
-      </Footer>
+      {status === "authenticated" && (
+        <Footer isCenter>
+          <Link href="/add-exercise">
+            <Button colorScheme="twitter">Add Exercise</Button>
+          </Link>
+        </Footer>
+      )}
     </Stack>
   );
 }

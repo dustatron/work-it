@@ -11,7 +11,10 @@ import shuffle from "lodash/shuffle";
 export const workoutRouter = createTRPCRouter({
   listWorkouts: publicProcedure.query(({ ctx }) => {
     const user = ctx.session?.user;
-    return ctx.db.workout.findMany({ where: { userId: user?.id } });
+    if (user) {
+      return ctx.db.workout.findMany({ where: { userId: user?.id } });
+    }
+    return []
   }),
   getWorkout: publicProcedure
     .input(z.object({ workoutId: z.string().optional() }))
@@ -37,7 +40,7 @@ export const workoutRouter = createTRPCRouter({
           },
         },
       });
- 
+
     }),
   deleteWorkout: protectedProcedure
     .input(z.object({ workoutId: z.string() }))

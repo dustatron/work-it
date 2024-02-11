@@ -14,6 +14,7 @@ import {
   TableContainer,
   Box,
 } from "@chakra-ui/react";
+import { useSession } from "next-auth/react"
 import { capitalize } from "lodash";
 import { useRouter } from "next/router";
 import React from "react";
@@ -23,6 +24,7 @@ import { api } from "~/utils/api";
 
 export default function ExerciseDetail() {
   const { query } = useRouter();
+  const { data: session, status } = useSession()
   const { data } = api.exercise.getExercise.useQuery({
     id: query.id as string,
   });
@@ -106,16 +108,18 @@ export default function ExerciseDetail() {
           </Table>
         </TableContainer>
       </Stack>
-      <Footer isCenter>
-        {data?.id && <DeleteButton exerciseId={data.id} title={data.name} />}
-        <Button colorScheme="twitter">
-          Log{" "}
-          <Text fontSize="lg" pl="2">
-            {" "}
-            📝
-          </Text>
-        </Button>
-      </Footer>
+      {status === "authenticated" && (
+        <Footer isCenter>
+          {data?.id && <DeleteButton exerciseId={data.id} title={data.name} />}
+          <Button colorScheme="twitter">
+            Log{" "}
+            <Text fontSize="lg" pl="2">
+              {" "}
+              📝
+            </Text>
+          </Button>
+        </Footer>
+      )}
     </Stack>
   );
 }
