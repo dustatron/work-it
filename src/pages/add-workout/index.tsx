@@ -85,13 +85,13 @@ export default function AddWorkout() {
       (item: Exercise) => {
         if (muscleGroup && region) {
           return (
-            includes(item.muscleGroup, muscleGroup?.toLowerCase()) &&
-            includes(item.region, region?.toLowerCase())
+            includes(item.muscleGroup.map(muscle => muscle.toLowerCase()), muscleGroup?.toLowerCase()) &&
+            includes(item.region.map(region => region.toLowerCase()), region?.toLowerCase())
           );
         } else if (muscleGroup) {
-          return includes(item.muscleGroup, muscleGroup?.toLowerCase());
+          return includes(item.muscleGroup.map(muscle => muscle.toLowerCase()), muscleGroup?.toLowerCase());
         } else if (region) {
-          return includes(item.region, region?.toLowerCase());
+          return includes(item.region.map(region => region.toLowerCase()), region?.toLowerCase());
         } else {
           return true;
         }
