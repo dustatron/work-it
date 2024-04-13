@@ -3,13 +3,12 @@ import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { Box, Button, Container, Heading, Text, Stack } from "@chakra-ui/react";
 import Footer from "~/components/Footer";
-import DeleteButton from "~/components/DeleteButton";
 import { capitalize } from "lodash";
 import ExerciseBar from "~/components/ExerciseBar";
 import { useSession } from "next-auth/react"
 
 export default function WorkoutDetail() {
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const { data: session, status } = useSession()
   const { isLoading, data: workoutData } = api.workout.getWorkout.useQuery(
     { workoutId: query?.workoutId as string },
@@ -40,14 +39,10 @@ export default function WorkoutDetail() {
           ))}
         </Stack>
         {status === "authenticated" && (
-          <Footer>
+          <Footer isCenter>
             {workoutData && (
               <>
-                <DeleteButton
-                  workoutId={workoutData.id}
-                  title={workoutData.name}
-                />
-                <Button colorScheme="twitter">Edit</Button>
+                <Button onClick={() => push(`/workout/edit/${workoutData.id}`)} colorScheme="facebook">Edit</Button>
               </>
             )}
           </Footer>

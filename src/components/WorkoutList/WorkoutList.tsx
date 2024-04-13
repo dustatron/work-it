@@ -41,7 +41,7 @@ export default function WorkoutList() {
       ))}
       {status === "authenticated" && (
         <Footer isCenter>
-          <Button colorScheme="twitter" onClick={() => push("/add-workout")}>
+          <Button colorScheme="twitter" onClick={() => push("/workout/add")}>
             Add Workout
           </Button>
         </Footer>
