@@ -28,9 +28,10 @@ type Props = {
     onSubmit: (workout: WorkoutSchema) => void
     isLoading: boolean
     initialWorkoutData?: WorkoutSchema
+    isEdit?: boolean
 }
 
-export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoading, initialWorkoutData }: Props) {
+export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoading, initialWorkoutData, isEdit }: Props) {
     const toast = useToast();
     const [exerciseList, setExerciseList] = useState<Exercise[]>([]);
 
@@ -203,7 +204,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                             type="submit"
                             isDisabled={!values?.exercises?.length}
                         >
-                            Create Workout
+                            {isEdit ? "Update" : "Create Workout"}
                         </Button>
                     </Stack>
                     <Stack>
