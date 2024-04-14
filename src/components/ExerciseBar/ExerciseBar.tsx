@@ -1,8 +1,8 @@
-import { Box, Button, Card, Center, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Card, Center, Skeleton, Stack, Text } from "@chakra-ui/react";
 import { Exercise } from "@prisma/client";
 import { capitalize } from "lodash";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
 type Props = {
   exercise: Exercise;
@@ -10,6 +10,7 @@ type Props = {
   isRemoving?: boolean;
   addExercise?: (exercise: Exercise) => void;
   removeExercise?: (exercise: Exercise) => void;
+  isLoading?: boolean
 };
 
 const ExerciseBar = ({
@@ -17,8 +18,14 @@ const ExerciseBar = ({
   isAdding,
   isRemoving,
   addExercise,
-  removeExercise
+  removeExercise,
+  isLoading
 }: Props) => {
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  if (isDeleting && isLoading) {
+    return <Skeleton w="100%" h="40px" />
+  }
   return (
     <Card p="2" w="100%">
       <Stack direction="row" justifyContent="space-between">
@@ -44,7 +51,7 @@ const ExerciseBar = ({
             </Button>
           )}
           {isRemoving && (
-            <Button variant="ghost" onClick={() => removeExercise && removeExercise(exercise)}>
+            <Button variant="ghost" onClick={() => { removeExercise && removeExercise(exercise); setIsDeleting(true) }}>
               <Text fontSize="lg">🗑️</Text>
             </Button>
           )}

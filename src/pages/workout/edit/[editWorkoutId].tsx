@@ -1,7 +1,6 @@
 import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons";
 import { Heading, IconButton, Menu, MenuButton, MenuItem, MenuList, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import MenuItemDeleteWorkout from "~/components/MenuItemDeleteWorkout";
 import ProtectedRoute from "~/components/ProtectedRoute";
 import WorkoutForm from "~/components/WorkoutForm";
@@ -11,7 +10,7 @@ import { WorkoutSchema } from "~/utils/types";
 
 export default function EditWorkout() {
     const { query, push } = useRouter();
-    const { isLoading, data: workoutData } = api.workout.getWorkout.useQuery(
+    const { isLoading, data: workoutData, refetch } = api.workout.getWorkout.useQuery(
         { workoutId: query?.editWorkoutId as string },
         { enabled: !!query?.editWorkoutId }
     );
@@ -23,10 +22,10 @@ export default function EditWorkout() {
         }
     })
 
-    const [isEditing, setIsEditing] = useState(true)
 
     const onSubmit = (values: WorkoutSchema) => {
-        editMutate(values)
+        console.log("value submit", values)
+        editMutate({ ...values, id: query?.editWorkoutId as string || "" })
     }
 
     return (
@@ -44,16 +43,14 @@ export default function EditWorkout() {
                         {workoutData &&
                             <MenuList>
                                 <MenuItem icon={<SettingsIcon />} onClick={() => push(`/workout/${workoutData.id}`)} >
-                                    {isEditing ? "Cancel Edit" : "Edit Workout"}
+                                    Cancel Edit
                                 </MenuItem>
                                 <MenuItemDeleteWorkout workoutId={workoutData?.id} workoutTitle={workoutData?.name} />
                             </MenuList>
                         }
                     </Menu>
                 </Stack>
-                {isEditing &&
-                    <WorkoutForm isLoading={isEditLoading} onSubmit={onSubmit} initialWorkoutData={workoutData as WorkoutSchema || {}} isEdit workoutId={workoutData?.id} />
-                }
+                <WorkoutForm isLoading={isEditLoading} onSubmit={onSubmit} initialWorkoutData={workoutData as WorkoutSchema || {}} isEdit workoutId={workoutData?.id} refetch={refetch} />
             </Stack>
         </ProtectedRoute>
     )

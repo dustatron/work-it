@@ -1,4 +1,4 @@
-import { Box, Select, Stack, useToast, Text, Card } from "@chakra-ui/react";
+import { Box, Select, Stack, useToast, Text, Card, Skeleton } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import filter from "lodash/filter";
 import includes from "lodash/includes";
@@ -30,18 +30,21 @@ type Props = {
     initialWorkoutData?: WorkoutSchema
     isEdit?: boolean
     workoutId?: string
+    refetch: () => void
 }
 
-export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoading, initialWorkoutData, isEdit, workoutId }: Props) {
+export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoading, initialWorkoutData, isEdit, workoutId, refetch }: Props) {
     const [exerciseList, setExerciseList] = useState<Exercise[]>([]);
 
     const { data: mainExerciseList } = api.exercise.listExercises.useQuery();
 
-    const { isLoading: isRemoveLoading, mutate: removeThisExercise } = api.workout.removeExercise.useMutation()
+    const { isLoading: isRemoveLoading, mutate: removeThisExercise } = api.workout.removeExercise.useMutation({ onSettled: () => refetch() })
+    const { isLoading: isAddingLoading, mutate: addExerciseToWorkout } = api.workout.addExerciseToWorkout.useMutation({ onSettled: () => refetch() })
 
     useEffect(() => {
         if (mainExerciseList && !exerciseList.length) {
             setExerciseList(mainExerciseList);
+            updateFilter()
         }
     }, [mainExerciseList]);
 
@@ -93,7 +96,11 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
 
     const addExercise = (exercise: Exercise) => {
         const selectedExerciseList = getValues().exercises || []
-        setValue("exercises", [...selectedExerciseList, exercise])
+        if (isEdit && workoutId) {
+            addExerciseToWorkout({ workoutId, exerciseId: exercise.id })
+        } else {
+            setValue("exercises", [...selectedExerciseList, exercise])
+        }
 
         // filtering out selected
         const selectedIds = selectedExerciseList.map((ex) => ex.id);
@@ -121,10 +128,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
     const values = getValues()
     return (
         <>
-            <form onSubmit={(e) => {
-                e.preventDefault()
-                onSubmit(values)
-            }}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <Stack spacing={2}>
                     <Card
                         p="4"
@@ -138,12 +142,13 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                             <Text as="h2" fontWeight="bold" fontSize="x-large" align="center">
                                 Workout Details
                             </Text>
-                            <FormLabel htmlFor="name">Workout Name</FormLabel>
+                            <FormLabel htmlFor="name" fontWeight="bold">Workout Name *</FormLabel>
                             <Input
                                 id="name"
                                 placeholder="name"
                                 bg="white"
                                 borderColor="gray.200"
+                                isRequired
                                 {...register("name", {
                                     required: "This is required",
                                     minLength: { value: 3, message: "Minimum length should be 3" },
@@ -154,7 +159,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                             </FormErrorMessage>
                         </FormControl>
 
-                        <Stack direction="row">
+                        <Stack direction="row" pt="4">
                             <FormControl isInvalid={!!errors.muscleGroup}>
                                 <FormLabel htmlFor="muscleGroupd">Muscle Group</FormLabel>
                                 <Select
@@ -176,7 +181,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                                     {errors.muscleGroup && errors.muscleGroup.message}
                                 </FormErrorMessage>
                             </FormControl>
-                            <FormControl isInvalid={!!errors.region}>
+                            <FormControl isInvalid={!!errors.region} >
                                 <FormLabel htmlFor="Region">Region</FormLabel>
                                 <Select
                                     bg="white"
@@ -198,26 +203,17 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                                 </FormErrorMessage>
                             </FormControl>
                         </Stack>
+                        <Stack direction="row" width="fit" justifyContent="end" pt="4">
+
+                            <Button
+                                colorScheme="facebook"
+                                isLoading={isSubmitting || isCreateWorkoutLoading}
+                                type="submit"
+                            >
+                                {isEdit ? "Update" : "Create Workout"}
+                            </Button>
+                        </Stack>
                     </Card>
-                    <Stack direction="row" width="fit" justifyContent="space-between">
-
-                        <Button
-                            colorScheme="teal"
-                            isLoading={isSubmitting || isCreateWorkoutLoading}
-
-                            onClick={() => reset()}
-                        >
-                            Clear
-                        </Button>
-                        <Button
-                            colorScheme="teal"
-                            isLoading={isSubmitting || isCreateWorkoutLoading}
-                            type="submit"
-                            isDisabled={!values?.exercises?.length}
-                        >
-                            {isEdit ? "Update" : "Create Workout"}
-                        </Button>
-                    </Stack>
                     <Stack>
                         <Card
                             p="4"
@@ -237,14 +233,29 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                                         <Text>No Exercises Selected </Text>
                                     </Box>
                                 )}
-                                {values?.exercises?.map((exercise) => (
+                                {!isEdit && values.exercises?.map((exercise) => (
                                     <ExerciseBar
                                         key={exercise.id}
                                         exercise={exercise as Exercise}
                                         isRemoving
                                         removeExercise={removeExercise}
+                                        isLoading={isRemoveLoading}
+
                                     />
                                 ))}
+                                {isEdit && initialWorkoutData?.exercises?.map((exercise) => (
+                                    <ExerciseBar
+                                        key={exercise.id}
+                                        exercise={exercise as Exercise}
+                                        isRemoving
+                                        removeExercise={removeExercise}
+                                        isLoading={isRemoveLoading}
+
+                                    />
+                                ))}
+                                {isAddingLoading && (
+                                    <Skeleton w="100%" h="45px" />
+                                )}
                             </Stack>
                         </Card>
                         {exerciseList.map((exercise) => (

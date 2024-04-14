@@ -45,9 +45,18 @@ export const workoutRouter = createTRPCRouter({
     const selected = input.exercises?.map((item) => ({ id: item.id }));
     return await ctx.db.workout.update({
       where: { id: input.id },
-      data: { muscleGroup: input.muscleGroup, region: input.region, name: input.name, exercises: { connect: selected, } }
+      data: { muscleGroup: input.muscleGroup, region: input.region, name: input.name }
     })
 
+  }),
+  addExerciseToWorkout: protectedProcedure.input(z.object({ workoutId: z.string(), exerciseId: z.string() })).mutation(async ({ ctx, input }) => {
+    return await ctx.db.workout.update({
+      where: { id: input.workoutId }, data: {
+        exercises: {
+          connect: { id: input.exerciseId }
+        }
+      }
+    });
   }),
   removeExercise: protectedProcedure.input(z.object({ workoutId: z.string(), exerciseId: z.string() })).mutation(async ({ ctx, input }) => {
     return await ctx.db.workout.update({

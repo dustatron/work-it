@@ -19,7 +19,7 @@ export default function AddWorkout() {
   const { mutate, isLoading: isCreateWorkoutLoading } =
     api.workout.addWorkout.useMutation({
       onSuccess: (data) => {
-        toast({ title: "Workout Added", status: "success" });
+        toast({ title: "Workout Added", status: "success", isClosable: true });
         push(`/workout/${data.id}`);
       },
       onError: (data) => {
@@ -33,21 +33,17 @@ export default function AddWorkout() {
     });
 
   const onSubmit = (values: WorkoutSchema) => {
-    if (!!values?.exercises?.length) {
-      mutate({
-        name: values.name,
-        muscleGroup: values.muscleGroup,
-        region: values.region,
-        exercises: values.exercises,
-      });
-
-    }
+    mutate({
+      name: values.name,
+      muscleGroup: values.muscleGroup,
+      region: values.region,
+    });
   };
 
 
   return (
     <ProtectedRoute>
-      <WorkoutForm onSubmit={onSubmit} isLoading={isCreateWorkoutLoading} />
+      <WorkoutForm onSubmit={onSubmit} isLoading={isCreateWorkoutLoading} refetch={() => { }} />
 
     </ProtectedRoute>
   );
