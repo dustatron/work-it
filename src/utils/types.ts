@@ -44,11 +44,18 @@ export const workoutSchema = z.object({
   name: z.string().min(1),
   muscleGroup: z.custom<MusicGroupType>().optional(),
   region: z.custom<RegionType>().optional(),
-  exercises: z.array(z.custom<Exercise>()).optional(),
+  exerciseInWorkout: z.array(z.custom<Exercise>()).optional(),
 });
 
 export type WorkoutSchema = z.infer<typeof workoutSchema>;
 
+export type ExerciseInWorkout = {
+  id: string,
+  exercise: Exercise,
+  exerciseId: string,
+  sortOrder: number,
+  workoutId: string
+}
 
 export type Exercise = {
   id: string;
@@ -56,7 +63,6 @@ export type Exercise = {
   routineType: string | null;
   description: string | null;
   dateCreated: Date;
-  workoutId: string | null;
   userId: string;
   muscleGroup: string[];
   region: string[];

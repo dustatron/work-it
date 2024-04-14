@@ -20,29 +20,28 @@ export const workoutRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       return ctx.db.workout.findFirst({
         where: { id: input.workoutId },
-        include: { exercises: true, sets: true },
+        include: { exerciseInWorkouts: { include: { exercise: true } } },
       });
     }),
   addWorkout: protectedProcedure
     .input(workoutSchema)
     .mutation(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      const { name, exercises } = input;
-      const selected = exercises?.map((item) => ({ id: item.id }));
+      const { name, exerciseInWorkout } = input;
+      const selected = exerciseInWorkout?.map((item) => ({ id: item.id }));
 
       return ctx.db.workout.create({
         data: {
           name,
           userId: user.id,
-          exercises: {
+          exerciseInWorkouts: {
             connect: selected,
           },
         },
       });
-
     }),
   editWorkout: protectedProcedure.input(workoutSchema).mutation(async ({ ctx, input }) => {
-    const selected = input.exercises?.map((item) => ({ id: item.id }));
+    const selected = input.exerciseInWorkout?.map((item) => ({ id: item.id }));
     return await ctx.db.workout.update({
       where: { id: input.id },
       data: { muscleGroup: input.muscleGroup, region: input.region, name: input.name }
@@ -52,17 +51,25 @@ export const workoutRouter = createTRPCRouter({
   addExerciseToWorkout: protectedProcedure.input(z.object({ workoutId: z.string(), exerciseId: z.string() })).mutation(async ({ ctx, input }) => {
     return await ctx.db.workout.update({
       where: { id: input.workoutId }, data: {
-        exercises: {
-          connect: { id: input.exerciseId }
+        exerciseInWorkouts: {
+          create: {
+            exercise: {
+              connect: {
+                id: input.exerciseId
+              }
+            }
+          }
         }
       }
     });
   }),
-  removeExercise: protectedProcedure.input(z.object({ workoutId: z.string(), exerciseId: z.string() })).mutation(async ({ ctx, input }) => {
+  removeExercise: protectedProcedure.input(z.object({ workoutId: z.string(), exerciseInWorkoutId: z.string() })).mutation(async ({ ctx, input }) => {
     return await ctx.db.workout.update({
       where: { id: input.workoutId }, data: {
-        exercises: {
-          disconnect: { id: input.exerciseId }
+        exerciseInWorkouts: {
+          delete: {
+            id: input.exerciseInWorkoutId
+          }
         }
       }
     });

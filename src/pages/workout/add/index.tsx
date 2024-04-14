@@ -20,7 +20,7 @@ export default function AddWorkout() {
     api.workout.addWorkout.useMutation({
       onSuccess: (data) => {
         toast({ title: "Workout Added", status: "success", isClosable: true });
-        push(`/workout/${data.id}`);
+        push(`/workout/edit/${data.id}`);
       },
       onError: (data) => {
         toast({

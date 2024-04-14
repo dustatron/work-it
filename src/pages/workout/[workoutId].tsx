@@ -30,12 +30,12 @@ export default function WorkoutDetail() {
             borderBottom="1px solid black"
             p="2"
           >
-            <Text># Exercises: {workoutData.exercises.length}</Text>
+            <Text># Exercises: {workoutData.exerciseInWorkouts.length}</Text>
           </Stack>
         </Box>
         <Stack spacing={5} p="2">
-          {workoutData.exercises.map((exercise) => (
-            <ExerciseBar key={exercise.id} exercise={exercise} />
+          {workoutData?.exerciseInWorkouts.map(({ exercise, id }) => (
+            <ExerciseBar key={exercise.id} exercise={exercise} exerciseInWorkoutId={id} />
           ))}
         </Stack>
         {status === "authenticated" && (
