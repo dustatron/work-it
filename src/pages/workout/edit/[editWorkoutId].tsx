@@ -25,7 +25,7 @@ export default function EditWorkout() {
 
     const onSubmit = (values: WorkoutSchema) => {
         console.log("value submit", values)
-        editMutate({ ...values, id: query?.editWorkoutId as string || "" })
+        editMutate({ ...values, id: query?.editWorkoutId as string ?? "" })
     }
 
     return (
@@ -50,7 +50,7 @@ export default function EditWorkout() {
                         }
                     </Menu>
                 </Stack>
-                <WorkoutForm isLoading={isEditLoading} onSubmit={onSubmit} initialWorkoutData={workoutData as WorkoutSchema || {}} isEdit workoutId={workoutData?.id} refetch={refetch} />
+                <WorkoutForm isLoading={isEditLoading} onSubmit={onSubmit} initialWorkoutData={workoutData as WorkoutSchema ?? {}} isEdit workoutId={workoutData?.id} refetch={refetch} />
             </Stack>
         </ProtectedRoute>
     )
