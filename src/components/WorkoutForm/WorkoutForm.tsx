@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import {
     Exercise,
+    ExerciseInWorkout,
     MuscleGroup,
     MusicGroupType,
     Region,
@@ -27,13 +28,14 @@ import ExerciseBar from "../ExerciseBar";
 type Props = {
     onSubmit: (workout: WorkoutSchema) => void
     isLoading: boolean
-    initialWorkoutData?: WorkoutSchema
+    initialWorkoutData?: ExerciseInWorkout[]
+    workoutValues?: WorkoutSchema
     isEdit?: boolean
     workoutId?: string
     refetch: () => void
 }
 
-export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoading, initialWorkoutData, isEdit, workoutId, refetch }: Props) {
+export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoading, workoutValues, initialWorkoutData, isEdit, workoutId, refetch }: Props) {
     const [exerciseList, setExerciseList] = useState<Exercise[]>([]);
 
     const { data: mainExerciseList } = api.exercise.listExercises.useQuery();
@@ -57,7 +59,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
         setValue,
         watch,
         reset
-    } = useForm<WorkoutSchema>({ defaultValues: { ...initialWorkoutData } });
+    } = useForm<WorkoutSchema>({ defaultValues: workoutValues });
 
     // useFormPersist("workoutForm", {
     //     watch,
@@ -65,7 +67,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
     // });
 
     const updateFilter = () => {
-        const selectedExerciseList = getValues().exercises ?? []
+        const selectedExerciseList = getValues().exerciseInWorkout ?? []
         const formValues = getValues();
         const muscleGroup = formValues.muscleGroup;
         const region = formValues.region;
@@ -95,11 +97,11 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
     };
 
     const addExercise = (exercise: Exercise) => {
-        const selectedExerciseList = getValues().exercises ?? []
+        const selectedExerciseList = getValues().exerciseInWorkout ?? []
         if (isEdit && workoutId) {
             addExerciseToWorkout({ workoutId, exerciseId: exercise.id })
         } else {
-            setValue("exercises", [...selectedExerciseList, exercise])
+            setValue("exerciseInWorkout", [...selectedExerciseList, exercise])
         }
 
         // filtering out selected
@@ -111,21 +113,23 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
         setExerciseList(updateList);
     };
 
-    const removeExercise = (exercise: Exercise) => {
-        const selectedExerciseList = getValues().exercises ?? []
+    const removeExercise = (exerciseInWorkoutId: string, exercise: Exercise) => {
+        const selectedExerciseList = getValues().exerciseInWorkout ?? []
         const trimmedList: Exercise[] = selectedExerciseList.filter(
-            (item) => item.id != exercise.id
+            (item) => item.id != exerciseInWorkoutId
         );
         setExerciseList([...exerciseList, exercise]);
-        setValue("exercises", trimmedList)
+        setValue("exerciseInWorkout", trimmedList)
 
-        const isInInitialData = !!initialWorkoutData?.exercises?.find(item => item.id === exercise.id)
+        const isInInitialData = !!initialWorkoutData?.find(item => item.id === exerciseInWorkoutId)
 
         if (isEdit && isInInitialData) {
-            removeThisExercise({ workoutId: workoutId ?? "", exerciseId: exercise.id })
+            removeThisExercise({ workoutId: workoutId ?? "", exerciseInWorkoutId: exerciseInWorkoutId })
         }
     };
     const values = getValues()
+    console.log("init data", initialWorkoutData)
+    const initialWorkoutDataSorted = initialWorkoutData?.sort((a, b) => a.sortOrder - b.sortOrder)
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -214,62 +218,61 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                             </Button>
                         </Stack>
                     </Card>
-                    <Stack>
-                        <Card
-                            p="4"
-                            boxShadow="md"
-                            bg="gray.50"
-                            border="2px"
-                            borderColor="gray.200"
-                        >
-                            <Box>
-                                <Text as="h2" fontWeight="bold" fontSize="x-large" align="center">
-                                    Selected Exercises
-                                </Text>
-                            </Box>
-                            <Stack>
-                                {!values?.exercises?.length && (
+                    {isEdit && (
+
+                        <Stack>
+                            <Card
+                                p="4"
+                                boxShadow="md"
+                                bg="gray.50"
+                                border="2px"
+                                borderColor="gray.200"
+                            >
+                                <Box>
+                                    <Text as="h2" fontWeight="bold" fontSize="x-large" align="center">
+                                        Selected Exercises
+                                    </Text>
+                                </Box>
+                                <Stack>
+                                    {/* {!values?.exerciseInWorkout?.length && (
                                     <Box>
                                         <Text>No Exercises Selected </Text>
                                     </Box>
-                                )}
-                                {!isEdit && values.exercises?.map((exercise) => (
-                                    <ExerciseBar
-                                        key={exercise.id}
-                                        exercise={exercise}
-                                        isRemoving
-                                        removeExercise={removeExercise}
-                                        isLoading={isRemoveLoading}
+                                )} */}
 
-                                    />
-                                ))}
-                                {isEdit && initialWorkoutData?.exercises?.map((exercise) => (
-                                    <ExerciseBar
-                                        key={exercise.id}
-                                        exercise={exercise}
-                                        isRemoving
-                                        removeExercise={removeExercise}
-                                        isLoading={isRemoveLoading}
+                                    {initialWorkoutDataSorted?.map(({ exercise, id }) => (
+                                        <ExerciseBar
+                                            key={exercise.id}
+                                            exercise={exercise}
+                                            isRemoving
+                                            exerciseInWorkoutId={id}
+                                            removeExercise={removeExercise}
+                                            isLoading={isRemoveLoading}
 
-                                    />
-                                ))}
-                                {isAddingLoading && (
-                                    <Skeleton w="100%" h="45px" />
-                                )}
-                            </Stack>
-                        </Card>
-                        {exerciseList.map((exercise) => (
-                            <ExerciseBar
-                                key={exercise.id}
-                                exercise={exercise}
-                                isAdding
-                                addExercise={addExercise}
-                            />
-                        ))}
-                    </Stack>
+                                        />
+                                    ))}
+
+                                    {isAddingLoading && (
+                                        <Skeleton w="100%" h="45px" />
+                                    )}
+                                </Stack>
+                            </Card>
+                            {exerciseList.map((exercise) => (
+                                <ExerciseBar
+                                    key={exercise.id}
+                                    exerciseInWorkoutId=""
+                                    exercise={exercise}
+                                    isAdding
+                                    addExercise={addExercise}
+                                />
+                            ))}
+                        </Stack>
+                    )}
+
                 </Stack>
             </form>
             <DevTool control={control} placement="bottom-right" />
         </>
     )
 }
+

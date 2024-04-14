@@ -33,7 +33,13 @@ export const exerciseRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return ctx.db.exercise.findFirst({
         where: { id: input.id },
-        include: { workout: true, user: true, sets: true },
+        include: {
+          exerciseInWorkouts: {
+            include: {
+              workout: true
+            }
+          }
+        },
       });
     }),
   deleteExercise: protectedProcedure

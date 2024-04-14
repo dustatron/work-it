@@ -5,7 +5,7 @@ import MenuItemDeleteWorkout from "~/components/MenuItemDeleteWorkout";
 import ProtectedRoute from "~/components/ProtectedRoute";
 import WorkoutForm from "~/components/WorkoutForm";
 import { api } from "~/utils/api";
-import { WorkoutSchema } from "~/utils/types";
+import { MusicGroupType, RegionType, WorkoutSchema } from "~/utils/types";
 
 
 export default function EditWorkout() {
@@ -28,6 +28,7 @@ export default function EditWorkout() {
         editMutate({ ...values, id: query?.editWorkoutId as string ?? "" })
     }
 
+    const workoutDataTrimmed: WorkoutSchema = { name: workoutData?.name ?? "", id: workoutData?.id, muscleGroup: workoutData?.muscleGroup as MusicGroupType, region: workoutData?.region as RegionType }
     return (
         <ProtectedRoute>
             <Stack>
@@ -43,14 +44,14 @@ export default function EditWorkout() {
                         {workoutData &&
                             <MenuList>
                                 <MenuItem icon={<SettingsIcon />} onClick={() => push(`/workout/${workoutData.id}`)} >
-                                    Cancel Edit
+                                    Close Edit
                                 </MenuItem>
                                 <MenuItemDeleteWorkout workoutId={workoutData?.id} workoutTitle={workoutData?.name} />
                             </MenuList>
                         }
                     </Menu>
                 </Stack>
-                <WorkoutForm isLoading={isEditLoading} onSubmit={onSubmit} initialWorkoutData={workoutData as WorkoutSchema ?? {}} isEdit workoutId={workoutData?.id} refetch={refetch} />
+                <WorkoutForm isLoading={isEditLoading} onSubmit={onSubmit} workoutValues={workoutDataTrimmed} initialWorkoutData={workoutData?.exerciseInWorkouts} isEdit workoutId={workoutData?.id} refetch={refetch} />
             </Stack>
         </ProtectedRoute>
     )

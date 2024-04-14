@@ -3,13 +3,16 @@ import { Exercise } from "@prisma/client";
 import { capitalize } from "lodash";
 import Link from "next/link";
 import React, { useState } from "react";
+import { ExerciseInWorkout } from "~/utils/types";
 
 type Props = {
   exercise: Exercise;
+  exerciseInWorkoutId: string;
   isAdding?: boolean;
   isRemoving?: boolean;
   addExercise?: (exercise: Exercise) => void;
-  removeExercise?: (exercise: Exercise) => void;
+  removeExercise?: (exerciseInWorkoutId: string, exercise: Exercise) => void;
+
   isLoading?: boolean
 };
 
@@ -19,7 +22,8 @@ const ExerciseBar = ({
   isRemoving,
   addExercise,
   removeExercise,
-  isLoading
+  isLoading,
+  exerciseInWorkoutId
 }: Props) => {
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -51,7 +55,7 @@ const ExerciseBar = ({
             </Button>
           )}
           {isRemoving && (
-            <Button variant="ghost" onClick={() => { removeExercise && removeExercise(exercise); setIsDeleting(true) }}>
+            <Button variant="ghost" onClick={() => { removeExercise && removeExercise(exerciseInWorkoutId, exercise); setIsDeleting(true) }}>
               <Text fontSize="lg">🗑️</Text>
             </Button>
           )}
