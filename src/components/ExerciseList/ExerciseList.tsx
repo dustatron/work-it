@@ -21,7 +21,7 @@ export default function ExerciseList({ exerciseData }: Props) {
         p="2"
       >
         {exerciseData?.map((exercise) => (
-          <ExerciseBar key={exercise.id} exercise={exercise} />
+          <ExerciseBar key={exercise.id} exercise={exercise} exerciseInWorkoutId="" />
         ))}
         <Box p="10"></Box>
       </Stack>
