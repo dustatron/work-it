@@ -15,7 +15,6 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react"
-import { capitalize } from "lodash";
 import { useRouter } from "next/router";
 import React from "react";
 import DeleteButton from "~/components/DeleteButton";
@@ -74,10 +73,6 @@ export default function ExerciseDetail() {
             ))}
           </Text>
         </Stack>
-        <Stack direction="row">
-          <Text fontWeight="bold">Use in: </Text>
-          <Text>{capitalize(data?.Workout?.name)}</Text>
-        </Stack>
       </Stack>
       <Stack>
         <Center>
@@ -96,15 +91,6 @@ export default function ExerciseDetail() {
                 <Th>Count</Th>
               </Tr>
             </Thead>
-            <Tbody>
-              {data?.sets.map((set) => (
-                <Tr key={set.id}>
-                  <Td>{set.dateCreated.toDateString()}</Td>
-                  <Td>{set.weight}</Td>
-                  <Td isNumeric>{set.rep}</Td>
-                </Tr>
-              ))}
-            </Tbody>
           </Table>
         </TableContainer>
       </Stack>
