@@ -64,7 +64,7 @@ model User {
     posts         Post[]
     workout       Workout[]
     Set           Set[]
-    Exercise      Exercise[]
+    exercise      Exercise[]
 }
 
 model VerificationToken {
@@ -82,7 +82,7 @@ model Exercise {
     description String?
     dateCreated DateTime @default(now())
     sets        Set[]
-    Workout     Workout? @relation(fields: [workoutId], references: [id])
+    workout     Workout? @relation(fields: [workoutId], references: [id])
     workoutId   String?
     user        User     @relation(fields: [userId], references: [id])
     userId      String
@@ -96,7 +96,7 @@ model Set {
     excerciseId String
     rep         Int
     weight      Float
-    Workout     Workout?  @relation(fields: [workoutId], references: [id])
+    workout     Workout?  @relation(fields: [workoutId], references: [id])
     exercise    Exercise? @relation(fields: [excerciseId], references: [id], onDelete: Cascade)
     dateCreated DateTime  @default(now())
     user        User      @relation(fields: [userId], references: [id])
@@ -111,4 +111,6 @@ model Workout {
     exercises   Exercise[]
     user        User       @relation(fields: [userId], references: [id])
     userId      String
+    muscleGroup String     @default("")
+    region      String     @default("")
 }
