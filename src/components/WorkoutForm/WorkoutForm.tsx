@@ -236,7 +236,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                                 {!isEdit && values.exercises?.map((exercise) => (
                                     <ExerciseBar
                                         key={exercise.id}
-                                        exercise={exercise as Exercise}
+                                        exercise={exercise}
                                         isRemoving
                                         removeExercise={removeExercise}
                                         isLoading={isRemoveLoading}
@@ -246,7 +246,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                                 {isEdit && initialWorkoutData?.exercises?.map((exercise) => (
                                     <ExerciseBar
                                         key={exercise.id}
-                                        exercise={exercise as Exercise}
+                                        exercise={exercise}
                                         isRemoving
                                         removeExercise={removeExercise}
                                         isLoading={isRemoveLoading}
