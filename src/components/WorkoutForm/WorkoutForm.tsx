@@ -65,7 +65,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
     // });
 
     const updateFilter = () => {
-        const selectedExerciseList = getValues().exercises || []
+        const selectedExerciseList = getValues().exercises ?? []
         const formValues = getValues();
         const muscleGroup = formValues.muscleGroup;
         const region = formValues.region;
@@ -95,7 +95,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
     };
 
     const addExercise = (exercise: Exercise) => {
-        const selectedExerciseList = getValues().exercises || []
+        const selectedExerciseList = getValues().exercises ?? []
         if (isEdit && workoutId) {
             addExerciseToWorkout({ workoutId, exerciseId: exercise.id })
         } else {
@@ -106,13 +106,13 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
         const selectedIds = selectedExerciseList.map((ex) => ex.id);
         const mainListUpdate = exerciseList?.filter((ex) => ex.id != exercise.id);
         const updateList =
-            mainListUpdate?.filter((ex) => !selectedIds.includes(ex.id)) || [];
+            mainListUpdate?.filter((ex) => !selectedIds.includes(ex.id)) ?? [];
 
         setExerciseList(updateList);
     };
 
     const removeExercise = (exercise: Exercise) => {
-        const selectedExerciseList = getValues().exercises || []
+        const selectedExerciseList = getValues().exercises ?? []
         const trimmedList: Exercise[] = selectedExerciseList.filter(
             (item) => item.id != exercise.id
         );
@@ -122,7 +122,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
         const isInInitialData = !!initialWorkoutData?.exercises?.find(item => item.id === exercise.id)
 
         if (isEdit && isInInitialData) {
-            removeThisExercise({ workoutId: workoutId || "", exerciseId: exercise.id })
+            removeThisExercise({ workoutId: workoutId ?? "", exerciseId: exercise.id })
         }
     };
     const values = getValues()
@@ -207,7 +207,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
 
                             <Button
                                 colorScheme="facebook"
-                                isLoading={isSubmitting || isCreateWorkoutLoading}
+                                isLoading={isSubmitting ?? isCreateWorkoutLoading}
                                 type="submit"
                             >
                                 {isEdit ? "Update" : "Create Workout"}
