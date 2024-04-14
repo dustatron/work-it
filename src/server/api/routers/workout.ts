@@ -6,7 +6,6 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { workoutSchema } from "~/utils/types";
-import shuffle from "lodash/shuffle";
 
 export const workoutRouter = createTRPCRouter({
   listWorkouts: publicProcedure.query(({ ctx }) => {
@@ -42,6 +41,23 @@ export const workoutRouter = createTRPCRouter({
       });
 
     }),
+  editWorkout: protectedProcedure.input(workoutSchema).mutation(async ({ ctx, input }) => {
+    const selected = input.exercises?.map((item) => ({ id: item.id }));
+    return await ctx.db.workout.update({
+      where: { id: input.id },
+      data: { muscleGroup: input.muscleGroup, region: input.region, name: input.name, exercises: { connect: selected, } }
+    })
+
+  }),
+  removeExercise: protectedProcedure.input(z.object({ workoutId: z.string(), exerciseId: z.string() })).mutation(async ({ ctx, input }) => {
+    return await ctx.db.workout.update({
+      where: { id: input.workoutId }, data: {
+        exercises: {
+          disconnect: { id: input.exerciseId }
+        }
+      }
+    });
+  }),
   deleteWorkout: protectedProcedure
     .input(z.object({ workoutId: z.string() }))
     .mutation(async ({ ctx, input }) => {

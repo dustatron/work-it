@@ -21,7 +21,7 @@ import {
     WorkoutSchema,
 } from "~/utils/types";
 import ExerciseBar from "../ExerciseBar";
-import useFormPersist from 'react-hook-form-persist'
+// import useFormPersist from 'react-hook-form-persist' 
 
 
 type Props = {
@@ -29,13 +29,15 @@ type Props = {
     isLoading: boolean
     initialWorkoutData?: WorkoutSchema
     isEdit?: boolean
+    workoutId?: string
 }
 
-export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoading, initialWorkoutData, isEdit }: Props) {
-    const toast = useToast();
+export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoading, initialWorkoutData, isEdit, workoutId }: Props) {
     const [exerciseList, setExerciseList] = useState<Exercise[]>([]);
 
     const { data: mainExerciseList } = api.exercise.listExercises.useQuery();
+
+    const { isLoading: isRemoveLoading, mutate: removeThisExercise } = api.workout.removeExercise.useMutation()
 
     useEffect(() => {
         if (mainExerciseList && !exerciseList.length) {
@@ -54,10 +56,10 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
         reset
     } = useForm<WorkoutSchema>({ defaultValues: { ...initialWorkoutData } });
 
-    useFormPersist("workoutForm", {
-        watch,
-        setValue,
-    });
+    // useFormPersist("workoutForm", {
+    //     watch,
+    //     setValue,
+    // });
 
     const updateFilter = () => {
         const selectedExerciseList = getValues().exercises || []
@@ -69,7 +71,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
             (item: Exercise) => !includes(selectedExerciseList, item)
         );
 
-        const filtered: Exercise[] = filter(
+        const filtered = filter(
             selectedItemsRemoved,
             (item: Exercise) => {
                 if (muscleGroup && region) {
@@ -86,7 +88,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                 }
             }
         );
-        setExerciseList(filtered);
+        setExerciseList(filtered as Exercise[]);
     };
 
     const addExercise = (exercise: Exercise) => {
@@ -109,11 +111,20 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
         );
         setExerciseList([...exerciseList, exercise]);
         setValue("exercises", trimmedList)
+
+        const isInInitialData = !!initialWorkoutData?.exercises?.find(item => item.id === exercise.id)
+
+        if (isEdit && isInInitialData) {
+            removeThisExercise({ workoutId: workoutId || "", exerciseId: exercise.id })
+        }
     };
     const values = getValues()
     return (
         <>
-            <form onSubmit={handleSubmit((values) => { onSubmit(values); localStorage.removeItem("workoutForm") })}>
+            <form onSubmit={(e) => {
+                e.preventDefault()
+                onSubmit(values)
+            }}>
                 <Stack spacing={2}>
                     <Card
                         p="4"
@@ -229,7 +240,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                                 {values?.exercises?.map((exercise) => (
                                     <ExerciseBar
                                         key={exercise.id}
-                                        exercise={exercise}
+                                        exercise={exercise as Exercise}
                                         isRemoving
                                         removeExercise={removeExercise}
                                     />

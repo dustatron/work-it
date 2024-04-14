@@ -9,6 +9,7 @@ export const RoutineTypeValues = {
 };
 export type RoutineType = keyof typeof RoutineTypeValues;
 
+
 export const MuscleGroup = {
   Push: "PUSH",
   Pull: "PULL",
@@ -39,6 +40,7 @@ export const exerciseSchema = z.object({
 export type ExerciseSchema = z.infer<typeof exerciseSchema>;
 
 export const workoutSchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(1),
   muscleGroup: z.custom<MusicGroupType>().optional(),
   region: z.custom<RegionType>().optional(),
@@ -46,6 +48,7 @@ export const workoutSchema = z.object({
 });
 
 export type WorkoutSchema = z.infer<typeof workoutSchema>;
+
 
 export type Exercise = {
   id: string;
@@ -57,4 +60,17 @@ export type Exercise = {
   userId: string;
   muscleGroup: string[];
   region: string[];
+  sets?: Set[];
 };
+
+export type Set = {
+  id: string
+  workoutId: string
+  excerciseId: string
+  rep: number
+  weight: number
+  workout: WorkoutSchema
+  exercise: Exercise
+  dateCreated: string
+  userId: string
+}
