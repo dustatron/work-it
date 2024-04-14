@@ -76,18 +76,27 @@ model VerificationToken {
 }
 
 model Exercise {
+    id                 String               @id @default(cuid())
+    name               String
+    routineType        String?
+    description        String?
+    dateCreated        DateTime             @default(now())
+    sets               Set[]
+    user               User                 @relation(fields: [userId], references: [id])
+    userId             String
+    muscleGroup        String[]
+    region             String[]
+    ExerciseInWorkouts ExerciseInWorkouts[]
+}
+
+model ExerciseInWorkouts {
     id          String   @id @default(cuid())
-    name        String
-    routineType String?
-    description String?
     dateCreated DateTime @default(now())
-    sets        Set[]
-    workout     Workout? @relation(fields: [workoutId], references: [id])
-    workoutId   String?
-    user        User     @relation(fields: [userId], references: [id])
-    userId      String
-    muscleGroup String[]
-    region      String[]
+    workout     Workout  @relation(fields: [workoutId], references: [id])
+    workoutId   String
+    exercise    Exercise @relation(fields: [exerciseId], references: [id])
+    exerciseId  String
+    sortOrder   Int
 }
 
 model Set {
@@ -104,13 +113,13 @@ model Set {
 }
 
 model Workout {
-    id          String     @id @default(cuid())
-    name        String
-    dateCreated DateTime   @default(now())
-    sets        Set[]
-    exercises   Exercise[]
-    user        User       @relation(fields: [userId], references: [id])
-    userId      String
-    muscleGroup String     @default("")
-    region      String     @default("")
+    id                 String               @id @default(cuid())
+    name               String
+    dateCreated        DateTime             @default(now())
+    sets               Set[]
+    user               User                 @relation(fields: [userId], references: [id])
+    userId             String
+    muscleGroup        String               @default("")
+    region             String               @default("")
+    ExerciseInWorkouts ExerciseInWorkouts[]
 }
