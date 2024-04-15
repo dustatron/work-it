@@ -34,7 +34,7 @@ export const exerciseSchema = z.object({
   description: z.string().optional(),
   muscleGroup: z.array(z.object({ value: z.string(), label: z.string() })),
   region: z.array(z.object({ value: z.string(), label: z.string() })),
-  routineType: z.string().optional()
+  routineType: z.string().optional(),
 });
 
 export type ExerciseSchema = z.infer<typeof exerciseSchema>;
@@ -45,6 +45,7 @@ export const workoutSchema = z.object({
   muscleGroup: z.custom<MusicGroupType>().optional(),
   region: z.custom<RegionType>().optional(),
   exerciseInWorkout: z.array(z.custom<Exercise>()).optional(),
+  searchTerm: z.string().optional()
 });
 
 export type WorkoutSchema = z.infer<typeof workoutSchema>;

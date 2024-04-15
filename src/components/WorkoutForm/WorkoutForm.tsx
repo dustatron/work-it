@@ -1,10 +1,11 @@
-import { Box, Select, Stack, useToast, Text, Card, Skeleton } from "@chakra-ui/react";
+import { Box, Select, Stack, Text, Card, Skeleton } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import filter from "lodash/filter";
 import includes from "lodash/includes";
 import { api } from "~/utils/api";
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
+import Fuse from 'fuse.js'
 import {
     FormErrorMessage,
     FormLabel,
@@ -22,7 +23,6 @@ import {
     WorkoutSchema,
 } from "~/utils/types";
 import ExerciseBar from "../ExerciseBar";
-// import useFormPersist from 'react-hook-form-persist' 
 
 
 type Props = {
@@ -61,39 +61,32 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
         reset
     } = useForm<WorkoutSchema>({ defaultValues: workoutValues });
 
-    // useFormPersist("workoutForm", {
-    //     watch,
-    //     setValue,
-    // });
 
     const updateFilter = () => {
-        const selectedExerciseList = getValues().exerciseInWorkout ?? []
         const formValues = getValues();
-        const muscleGroup = formValues.muscleGroup;
-        const region = formValues.region;
+        const selectedExerciseList = getValues().exerciseInWorkout ?? []
+        const muscleGroup = formValues.muscleGroup ?? ""
+        const region = formValues.region ?? ""
         const selectedItemsRemoved = filter(
             mainExerciseList,
             (item: Exercise) => !includes(selectedExerciseList, item)
         );
 
-        const filtered = filter(
-            selectedItemsRemoved,
-            (item: Exercise) => {
-                if (muscleGroup && region) {
-                    return (
-                        includes(item.muscleGroup.map(muscle => muscle.toLowerCase()), muscleGroup?.toLowerCase()) &&
-                        includes(item.region.map(region => region.toLowerCase()), region?.toLowerCase())
-                    );
-                } else if (muscleGroup) {
-                    return includes(item.muscleGroup.map(muscle => muscle.toLowerCase()), muscleGroup?.toLowerCase());
-                } else if (region) {
-                    return includes(item.region.map(region => region.toLowerCase()), region?.toLowerCase());
-                } else {
-                    return true;
-                }
-            }
-        );
-        setExerciseList(filtered as Exercise[]);
+
+        const fuse = new Fuse(selectedItemsRemoved, {
+            keys: ["name", 'muscleGroup', 'routineType', 'description', 'region'],
+            threshold: 0.5,
+            isCaseSensitive: false,
+        })
+
+        if (region || muscleGroup || formValues.searchTerm) {
+            console.log("search", formValues.searchTerm)
+            const filtered = fuse.search(`${formValues.searchTerm} ${muscleGroup} ${region}`).map(item => item.item) as unknown as Exercise[]
+            setExerciseList(filtered as Exercise[]);
+        } else {
+            setExerciseList(selectedItemsRemoved as Exercise[]);
+
+        }
     };
 
     const addExercise = (exercise: Exercise) => {
@@ -202,6 +195,25 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                                     <option value={Region.Lower}>Lower</option>
                                     <option value={Region.FullBody}>Full Body</option>
                                 </Select>
+                                <FormErrorMessage>
+                                    {errors.region && errors.region.message}
+                                </FormErrorMessage>
+                            </FormControl>
+                        </Stack>
+                        <Stack>
+                            <FormControl isInvalid={!!errors.searchTerm} >
+                                <FormLabel htmlFor="searchTerm">Search</FormLabel>
+                                <Input
+                                    bg="white"
+                                    borderColor="gray.200"
+                                    placeholder="Select option"
+                                    {...register("searchTerm")}
+                                    onChange={(e) => {
+                                        setValue("searchTerm", e.target.value);
+                                        updateFilter();
+                                    }}
+                                />
+
                                 <FormErrorMessage>
                                     {errors.region && errors.region.message}
                                 </FormErrorMessage>
