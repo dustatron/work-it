@@ -82,7 +82,7 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
         if (region || muscleGroup || formValues.searchTerm) {
             console.log("search", formValues.searchTerm)
             const filtered = fuse.search(`${formValues.searchTerm} ${muscleGroup} ${region}`).map(item => item.item) as unknown as Exercise[]
-            setExerciseList(filtered as Exercise[]);
+            setExerciseList(filtered);
         } else {
             setExerciseList(selectedItemsRemoved as Exercise[]);
 
