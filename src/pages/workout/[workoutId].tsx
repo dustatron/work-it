@@ -6,6 +6,9 @@ import Footer from "~/components/Footer";
 import { capitalize } from "lodash";
 import ExerciseBar from "~/components/ExerciseBar";
 import { useSession } from "next-auth/react"
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import SortableExerciseList from "~/components/SortableExerciseList";
 
 export default function WorkoutDetail() {
   const { query, push } = useRouter();
@@ -34,9 +37,12 @@ export default function WorkoutDetail() {
           </Stack>
         </Box>
         <Stack spacing={5} p="2">
-          {workoutData?.exerciseInWorkouts.map(({ exercise, id }) => (
-            <ExerciseBar key={exercise.id} exercise={exercise} exerciseInWorkoutId={id} />
-          ))}
+          <DndProvider backend={HTML5Backend}>
+            <SortableExerciseList exericesList={workoutData?.exerciseInWorkouts} />
+            {/* {workoutData?.exerciseInWorkouts.map(({ exercise, id }) => (
+              <ExerciseBar key={exercise.id} exercise={exercise} exerciseInWorkoutId={id} />
+            ))} */}
+          </DndProvider>
         </Stack>
         {status === "authenticated" && (
           <Footer isCenter>
