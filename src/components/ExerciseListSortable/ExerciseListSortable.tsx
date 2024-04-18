@@ -40,7 +40,6 @@ export default function ExerciseListSortable({ workoutItems }: Props) {
             style={{ listStyle: "none" }}
           >
             <span>
-              {" "}
               <ExerciseCard exercise={item.exercise} />
             </span>
           </Reorder.Item>
