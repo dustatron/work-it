@@ -16,7 +16,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <ChakraProvider>
       <SessionProvider session={session}>
         <NavBar />
-        <Container height="100%">
+        <Container height="100%" p="1">
           <Component {...pageProps} />
         </Container>
       </SessionProvider>
