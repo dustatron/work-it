@@ -63,6 +63,30 @@ export const workoutRouter = createTRPCRouter({
       }
     });
   }),
+  updateSortOrder: protectedProcedure.input(z.object({ newOrder: z.array(z.object({ id: z.string(), sortOrder: z.string() })) })).mutation(async ({ ctx, input }) => {
+    try {
+      const updates = input.newOrder.map((exercise) => {
+        if (exercise !== undefined) {
+          return ctx.db.exerciseInWorkouts.update({
+            where: {
+              id: exercise.id
+            },
+            data: {
+              sortOrder: + exercise.sortOrder
+            }
+          });
+        }
+        throw new Error(`Exercise not found in the existing order.`);
+      });
+
+      console.log('Exercises re-ordered successfully.');
+      return await ctx.db.$transaction(updates);
+
+    } catch (error) {
+      console.error('Failed to reorder exercises:', error);
+      throw error;
+    }
+  }),
   removeExercise: protectedProcedure.input(z.object({ workoutId: z.string(), exerciseInWorkoutId: z.string() })).mutation(async ({ ctx, input }) => {
     return await ctx.db.workout.update({
       where: { id: input.workoutId }, data: {

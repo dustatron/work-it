@@ -246,12 +246,6 @@ export default function WorkoutForm({ onSubmit, isLoading: isCreateWorkoutLoadin
                                     </Text>
                                 </Box>
                                 <Stack>
-                                    {/* {!values?.exerciseInWorkout?.length && (
-                                    <Box>
-                                        <Text>No Exercises Selected </Text>
-                                    </Box>
-                                )} */}
-
                                     {initialWorkoutDataSorted?.map(({ exercise, id }) => (
                                         <ExerciseBar
                                             key={exercise.id}
