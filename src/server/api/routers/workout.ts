@@ -65,12 +65,7 @@ export const workoutRouter = createTRPCRouter({
   }),
   updateSortOrder: protectedProcedure.input(z.object({ newOrder: z.array(z.object({ id: z.string(), sortOrder: z.string() })) })).mutation(async ({ ctx, input }) => {
     try {
-      // Create a map of exercise IDs to their existing order
-      // const exerciseOrderMap = new Map(input.newOrder.map((item, index) => [item, index]));
-
-      // Update the order of exercises based on the new order
       const updates = input.newOrder.map((exercise) => {
-        // const existingIndex = exerciseOrderMap.get(exercise.id);
         if (exercise !== undefined) {
           return ctx.db.exerciseInWorkouts.update({
             where: {
@@ -81,12 +76,10 @@ export const workoutRouter = createTRPCRouter({
             }
           });
         }
-        // Handle case where exercise ID doesn't exist in the existing order
-        throw new Error(`Exercise with ID ${exercise} not found in the existing order.`);
+        throw new Error(`Exercise not found in the existing order.`);
       });
 
       console.log('Exercises re-ordered successfully.');
-      // Execute all update operations as a transaction
       return await ctx.db.$transaction(updates);
 
     } catch (error) {
