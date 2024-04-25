@@ -55,7 +55,6 @@ export default function ExerciseCard({ exercise }: Props) {
                 direction="row"
                 spacing={1}
                 cursor="pointer"
-                userSelect="none"
                 onPointerDown={(e) => dragControls.start(e)}
               >
                 <Flex alignItems="center">
@@ -65,6 +64,7 @@ export default function ExerciseCard({ exercise }: Props) {
                   fontWeight="bold"
                   textTransform="capitalize"
                   alignContent="center"
+                  userSelect="text"
                 >
                   {item.name}
                 </Text>
