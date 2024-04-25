@@ -14,6 +14,11 @@ import {
   MenuList,
   MenuItem,
   Tag,
+  NumberInput,
+  NumberInputField,
+  NumberIncrementStepper,
+  NumberInputStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { Reorder, useDragControls } from "framer-motion";
 import { useState } from "react";
@@ -30,8 +35,6 @@ export default function ExerciseCard({ exercise }: Props) {
   const [units, setUnits] = useState(0);
   const [sets, setSets] = useState(0);
 
-  const dragControls = useDragControls();
-
   const item = exercise.exercise;
 
   return (
@@ -39,8 +42,6 @@ export default function ExerciseCard({ exercise }: Props) {
       key={exercise.id}
       value={exercise}
       style={{ listStyle: "none" }}
-      dragListener={false}
-      dragControls={dragControls}
     >
       <Card p={1} border="1px" borderColor="gray.300">
         <Stack direction="row" w="100%">
@@ -50,9 +51,6 @@ export default function ExerciseCard({ exercise }: Props) {
               justifyContent="space-between"
               w="100%"
               p="2"
-              onPointerDown={(e) => {
-                dragControls.start(e);
-              }}
             >
               <Stack direction="row" spacing={1} cursor="pointer">
                 <Flex alignItems="center" px="3">
@@ -89,12 +87,18 @@ export default function ExerciseCard({ exercise }: Props) {
                 <Box w={{ base: "50%", md: "40%" }}>
                   <FormControl>
                     <Stack direction="row" spacing="1">
-                      <Input
-                        name="reps"
-                        type="number"
+                      <NumberInput
                         value={reps}
-                        onChange={(e) => setReps(Number(e.target.value))}
-                      />
+                        min={1}
+                        max={50}
+                        onChange={(e) => setReps(Number(e))}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
                       <Box>
                         <Menu>
                           <MenuButton
@@ -128,12 +132,18 @@ export default function ExerciseCard({ exercise }: Props) {
                   <FormControl>
                     {/* <FormLabel>{unitTitle}</FormLabel> */}
                     <Stack direction="row" alignItems="center" spacing="1">
-                      <Input
-                        name="units"
-                        type="number"
+                      <NumberInput
                         value={units}
-                        onChange={(e) => setUnits(Number(e.target.value))}
-                      />
+                        min={1}
+                        max={500}
+                        onChange={(e) => setUnits(Number(e))}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
                       <Box>
                         <Menu>
                           <MenuButton
