@@ -56,7 +56,6 @@ export default function ExerciseCard({ exercise }: Props) {
                 spacing={1}
                 cursor="pointer"
                 onPointerDown={(e) => {
-                  e.preventDefault();
                   dragControls.start(e);
                 }}
               >
@@ -67,7 +66,7 @@ export default function ExerciseCard({ exercise }: Props) {
                   fontWeight="bold"
                   textTransform="capitalize"
                   alignContent="center"
-                  userSelect="none"
+                  unselectable="on"
                 >
                   {item.name}
                 </Text>
