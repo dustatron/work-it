@@ -6,15 +6,13 @@ import {
   Text,
   Table,
   Thead,
-  Tbody,
   Tr,
   Th,
-  Td,
   TableCaption,
   TableContainer,
   Box,
 } from "@chakra-ui/react";
-import { useSession } from "next-auth/react"
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React from "react";
 import DeleteButton from "~/components/DeleteButton";
@@ -23,7 +21,7 @@ import { api } from "~/utils/api";
 
 export default function ExerciseDetail() {
   const { query } = useRouter();
-  const { data: session, status } = useSession()
+  const { data: session, status } = useSession();
   const { data } = api.exercise.getExercise.useQuery({
     id: query.id as string,
   });
@@ -59,18 +57,12 @@ export default function ExerciseDetail() {
         </Stack>
         <Stack direction="row">
           <Text fontWeight="bold">region: </Text>
-          <Text>
-            {data?.region.map((reg) => (
-              <Box key={reg}>{reg}</Box>
-            ))}
-          </Text>
+          <Text>{data?.region.map((reg) => <Box key={reg}>{reg}</Box>)}</Text>
         </Stack>
         <Stack direction="row">
           <Text fontWeight="bold">muscle group: </Text>
           <Text>
-            {data?.muscleGroup.map((mus) => (
-              <Box key={mus}>{mus}</Box>
-            ))}
+            {data?.muscleGroup.map((mus) => <Box key={mus}>{mus}</Box>)}
           </Text>
         </Stack>
       </Stack>

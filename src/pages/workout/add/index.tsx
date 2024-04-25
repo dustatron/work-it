@@ -1,12 +1,7 @@
 import { useToast } from "@chakra-ui/react";
 import React from "react";
-
 import { api } from "~/utils/api";
-import { useForm } from "react-hook-form";
-
-import {
-  WorkoutSchema,
-} from "~/utils/types";
+import { WorkoutSchema } from "~/utils/types";
 import { useRouter } from "next/router";
 import ProtectedRoute from "~/components/ProtectedRoute";
 import WorkoutForm from "~/components/WorkoutForm";
@@ -14,7 +9,6 @@ import WorkoutForm from "~/components/WorkoutForm";
 export default function AddWorkout() {
   const toast = useToast();
   const { push } = useRouter();
-
 
   const { mutate, isLoading: isCreateWorkoutLoading } =
     api.workout.addWorkout.useMutation({
@@ -29,7 +23,6 @@ export default function AddWorkout() {
           description: data.message,
         });
       },
-
     });
 
   const onSubmit = (values: WorkoutSchema) => {
@@ -44,13 +37,15 @@ export default function AddWorkout() {
     if (!isCreateWorkoutLoading) {
       // just doing to hack the linter
     }
-  }
-
+  };
 
   return (
     <ProtectedRoute>
-      <WorkoutForm onSubmit={onSubmit} isLoading={isCreateWorkoutLoading} refetch={refetch} />
-
+      <WorkoutForm
+        onSubmit={onSubmit}
+        isLoading={isCreateWorkoutLoading}
+        refetch={refetch}
+      />
     </ProtectedRoute>
   );
 }

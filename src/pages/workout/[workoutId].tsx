@@ -3,20 +3,16 @@ import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import {
   Box,
-  Button,
   Heading,
-  Text,
   Stack,
   Menu,
   MenuButton,
   IconButton,
   MenuList,
   MenuItem,
-  Center,
   Flex,
   Badge,
 } from "@chakra-ui/react";
-import Footer from "~/components/Footer";
 import { capitalize } from "lodash";
 import { useSession } from "next-auth/react";
 import ExerciseListSortable from "~/components/ExerciseListSortable";
