@@ -30,7 +30,7 @@ export default function ExerciseListSortable({ workoutItems }: Props) {
         handleNewSort(order);
       }}
     >
-      <Stack>
+      <Stack spacing="3">
         {exericeList.map((item) => (
           <ExerciseCard exercise={item} key={item.id} />
         ))}

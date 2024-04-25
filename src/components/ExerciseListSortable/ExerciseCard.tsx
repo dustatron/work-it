@@ -6,7 +6,6 @@ import {
   Flex,
   Icon,
   Button,
-  Input,
   FormControl,
   Box,
   Menu,
@@ -29,6 +28,7 @@ type Props = {
 };
 
 export default function ExerciseCard({ exercise }: Props) {
+  const controls = useDragControls();
   const [reps, setReps] = useState(0);
   const [repTitle, setRepTitle] = useState("Rep");
   const [unitTitle, setUnitTitle] = useState("lbs");
@@ -42,6 +42,8 @@ export default function ExerciseCard({ exercise }: Props) {
       key={exercise.id}
       value={exercise}
       style={{ listStyle: "none" }}
+      dragListener={false}
+      dragControls={controls}
     >
       <Card p={1} border="1px" borderColor="gray.300">
         <Stack direction="row" w="100%">
@@ -53,7 +55,11 @@ export default function ExerciseCard({ exercise }: Props) {
               p="2"
             >
               <Stack direction="row" spacing={1} cursor="pointer">
-                <Flex alignItems="center" px="3">
+                <Flex
+                  alignItems="center"
+                  onPointerDown={(e) => controls.start(e)}
+                  px="2"
+                >
                   <Icon as={DragHandleIcon} />
                 </Flex>
                 <Text

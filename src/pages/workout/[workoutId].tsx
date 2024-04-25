@@ -12,6 +12,7 @@ import {
   MenuItem,
   Flex,
   Badge,
+  Button,
 } from "@chakra-ui/react";
 import { capitalize } from "lodash";
 import { useSession } from "next-auth/react";
@@ -43,34 +44,33 @@ export default function WorkoutDetail() {
                 </Badge>
               </Flex>
             </Stack>
-            <Menu>
-              <MenuButton
-                as={IconButton}
-                aria-label="Options"
-                icon={<TriangleDownIcon />}
-                variant="outline"
-              />
-              {workoutData && (
-                <MenuList>
-                  <MenuItem
-                    icon={<AddIcon />}
-                    onClick={() => alert("coming soon...")}
-                  >
-                    Log Workout
-                  </MenuItem>
-                  <MenuItem
-                    icon={<EditIcon />}
-                    onClick={() => push(`/workout/edit/${workoutData.id}`)}
-                  >
-                    Edit
-                  </MenuItem>
-                  <MenuItemDeleteWorkout
-                    workoutId={workoutData?.id}
-                    workoutTitle={workoutData?.name}
-                  />
-                </MenuList>
-              )}
-            </Menu>
+            <Stack direction="row" pt="2">
+              <Button rightIcon={<AddIcon />} colorScheme="twitter">
+                Complete
+              </Button>
+              <Menu>
+                <MenuButton
+                  as={IconButton}
+                  aria-label="Options"
+                  icon={<TriangleDownIcon />}
+                  variant="outline"
+                />
+                {workoutData && (
+                  <MenuList>
+                    <MenuItem
+                      icon={<EditIcon />}
+                      onClick={() => push(`/workout/edit/${workoutData.id}`)}
+                    >
+                      Edit
+                    </MenuItem>
+                    <MenuItemDeleteWorkout
+                      workoutId={workoutData?.id}
+                      workoutTitle={workoutData?.name}
+                    />
+                  </MenuList>
+                )}
+              </Menu>
+            </Stack>
           </Stack>
         </Box>
         <Stack spacing={5} py="2">
