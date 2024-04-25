@@ -67,6 +67,7 @@ export default function ExerciseCard({ exercise }: Props) {
                   fontWeight="bold"
                   textTransform="capitalize"
                   alignContent="center"
+                  userSelect="none"
                 >
                   {item.name}
                 </Text>
