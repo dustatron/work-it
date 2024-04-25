@@ -72,7 +72,13 @@ export default function ExerciseCard({ exercise }: Props) {
                 </Text>
               </Stack>
               <Stack direction="row">
-                <Tag variant="subtle" colorScheme="cyan" size="md" px="3">
+                <Tag
+                  variant="subtle"
+                  colorScheme="cyan"
+                  size="md"
+                  px="3"
+                  userSelect="none"
+                >
                   # {sets}
                 </Tag>
                 <Box display={{ base: "inherit", md: "none" }}>
