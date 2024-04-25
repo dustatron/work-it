@@ -20,7 +20,6 @@ export default function ExerciseListSortable({ workoutItems }: Props) {
       sortOrder: `${index}`,
     }));
     mutate({ newOrder });
-    console.log(sort);
   };
 
   return (

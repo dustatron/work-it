@@ -3,21 +3,20 @@ import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import {
   Box,
-  Button,
   Heading,
-  Text,
   Stack,
   Menu,
   MenuButton,
   IconButton,
   MenuList,
   MenuItem,
+  Flex,
+  Badge,
 } from "@chakra-ui/react";
-import Footer from "~/components/Footer";
 import { capitalize } from "lodash";
 import { useSession } from "next-auth/react";
 import ExerciseListSortable from "~/components/ExerciseListSortable";
-import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons";
+import { AddIcon, HamburgerIcon, SettingsIcon } from "@chakra-ui/icons";
 import MenuItemDeleteWorkout from "~/components/MenuItemDeleteWorkout";
 
 export default function WorkoutDetail() {
@@ -25,7 +24,7 @@ export default function WorkoutDetail() {
   const { status } = useSession();
   const { isLoading, data: workoutData } = api.workout.getWorkout.useQuery(
     { workoutId: query?.workoutId as string },
-    { enabled: !!query?.workoutId }
+    { enabled: !!query?.workoutId },
   );
 
   if (isLoading) {
@@ -36,7 +35,14 @@ export default function WorkoutDetail() {
       <Box p="0">
         <Box>
           <Stack direction="row" justifyContent="space-between">
-            <Heading>{capitalize(workoutData.name)}</Heading>
+            <Stack direction="row">
+              <Heading>{capitalize(workoutData.name)}</Heading>
+              <Flex alignItems="center">
+                <Badge colorScheme="purple">
+                  {workoutData.exerciseInWorkouts.length}
+                </Badge>
+              </Flex>
+            </Stack>
             <Menu>
               <MenuButton
                 as={IconButton}
@@ -46,6 +52,12 @@ export default function WorkoutDetail() {
               />
               {workoutData && (
                 <MenuList>
+                  <MenuItem
+                    icon={<AddIcon />}
+                    onClick={() => alert("coming soon...")}
+                  >
+                    Log Workout
+                  </MenuItem>
                   <MenuItem
                     icon={<SettingsIcon />}
                     onClick={() => push(`/workout/edit/${workoutData.id}`)}
@@ -66,31 +78,15 @@ export default function WorkoutDetail() {
             spacing={5}
             borderBottom="1px solid black"
             p="0"
-          >
-            <Text># Exercises: {workoutData.exerciseInWorkouts.length}</Text>
-          </Stack>
+          ></Stack>
         </Box>
-        <Stack spacing={5} py="2" h="70vh" overflow="auto">
+        <Stack spacing={5} py="2" h="fit" overflow="auto">
           {workoutData?.exerciseInWorkouts && (
             <ExerciseListSortable
               workoutItems={workoutData.exerciseInWorkouts}
             />
           )}
         </Stack>
-        {status === "authenticated" && (
-          <Footer isCenter>
-            {workoutData && (
-              <>
-                <Button
-                  onClick={() => alert("coming soon..")}
-                  colorScheme="green"
-                >
-                  Log
-                </Button>
-              </>
-            )}
-          </Footer>
-        )}
       </Box>
     );
   }
