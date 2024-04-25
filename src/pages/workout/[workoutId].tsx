@@ -73,7 +73,7 @@ export default function WorkoutDetail() {
             </Menu>
           </Stack>
         </Box>
-        <Stack spacing={5} py="2" h="fit" overflow="auto">
+        <Stack spacing={5} py="2">
           {workoutData?.exerciseInWorkouts && (
             <ExerciseListSortable
               workoutItems={workoutData.exerciseInWorkouts}
