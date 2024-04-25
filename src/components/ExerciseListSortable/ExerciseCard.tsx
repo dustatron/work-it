@@ -24,11 +24,11 @@ type Props = {
 };
 
 export default function ExerciseCard({ exercise }: Props) {
-  const [reps, setReps] = useState(0);
+  const [reps, setReps] = useState(null);
   const [repTitle, setRepTitle] = useState("Rep");
   const [unitTitle, setUnitTitle] = useState("lbs");
-  const [units, setUnits] = useState(0);
-  const [sets, setSets] = useState(0);
+  const [units, setUnits] = useState(null);
+  const [sets, setSets] = useState(null);
 
   const dragControls = useDragControls();
 
@@ -50,23 +50,19 @@ export default function ExerciseCard({ exercise }: Props) {
               justifyContent="space-between"
               w="100%"
               p="2"
+              onPointerDown={(e) => {
+                dragControls.start(e);
+              }}
             >
-              <Stack
-                direction="row"
-                spacing={1}
-                cursor="pointer"
-                onPointerDown={(e) => {
-                  dragControls.start(e);
-                }}
-              >
-                <Flex alignItems="center">
+              <Stack direction="row" spacing={1} cursor="pointer">
+                <Flex alignItems="center" px="3">
                   <Icon as={DragHandleIcon} />
                 </Flex>
                 <Text
                   fontWeight="bold"
                   textTransform="capitalize"
                   alignContent="center"
-                  unselectable="on"
+                  userSelect="none"
                 >
                   {item.name}
                 </Text>
