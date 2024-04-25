@@ -16,7 +16,7 @@ import {
 import { capitalize } from "lodash";
 import { useSession } from "next-auth/react";
 import ExerciseListSortable from "~/components/ExerciseListSortable";
-import { AddIcon, HamburgerIcon, SettingsIcon } from "@chakra-ui/icons";
+import { AddIcon, EditIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import MenuItemDeleteWorkout from "~/components/MenuItemDeleteWorkout";
 
 export default function WorkoutDetail() {
@@ -24,7 +24,7 @@ export default function WorkoutDetail() {
   const { status } = useSession();
   const { isLoading, data: workoutData } = api.workout.getWorkout.useQuery(
     { workoutId: query?.workoutId as string },
-    { enabled: !!query?.workoutId },
+    { enabled: !!query?.workoutId }
   );
 
   if (isLoading) {
@@ -47,7 +47,7 @@ export default function WorkoutDetail() {
               <MenuButton
                 as={IconButton}
                 aria-label="Options"
-                icon={<HamburgerIcon />}
+                icon={<TriangleDownIcon />}
                 variant="outline"
               />
               {workoutData && (
@@ -59,7 +59,7 @@ export default function WorkoutDetail() {
                     Log Workout
                   </MenuItem>
                   <MenuItem
-                    icon={<SettingsIcon />}
+                    icon={<EditIcon />}
                     onClick={() => push(`/workout/edit/${workoutData.id}`)}
                   >
                     Edit
@@ -72,13 +72,6 @@ export default function WorkoutDetail() {
               )}
             </Menu>
           </Stack>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            spacing={5}
-            borderBottom="1px solid black"
-            p="0"
-          ></Stack>
         </Box>
         <Stack spacing={5} py="2" h="fit" overflow="auto">
           {workoutData?.exerciseInWorkouts && (

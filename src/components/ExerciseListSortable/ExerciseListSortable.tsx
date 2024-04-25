@@ -1,4 +1,4 @@
-import { Reorder } from "framer-motion";
+import { Reorder, useDragControls } from "framer-motion";
 import { useState } from "react";
 import { api } from "~/utils/api";
 import { ExerciseInWorkout } from "~/utils/types";
@@ -13,7 +13,6 @@ export default function ExerciseListSortable({ workoutItems }: Props) {
   const { mutate } = api.workout.updateSortOrder.useMutation();
   const intialList = workoutItems.sort((a, b) => a.sortOrder - b.sortOrder);
   const [exericeList, setExericeList] = useState(intialList);
-
   const handleNewSort = (sort: ExerciseInWorkout[]) => {
     const newOrder = sort.map((item, index) => ({
       id: item?.id,
@@ -33,15 +32,7 @@ export default function ExerciseListSortable({ workoutItems }: Props) {
     >
       <Stack>
         {exericeList.map((item) => (
-          <Reorder.Item
-            key={item.id}
-            value={item}
-            style={{ listStyle: "none" }}
-          >
-            <span>
-              <ExerciseCard exercise={item.exercise} />
-            </span>
-          </Reorder.Item>
+          <ExerciseCard exercise={item} key={item.id} />
         ))}
       </Stack>
     </Reorder.Group>
