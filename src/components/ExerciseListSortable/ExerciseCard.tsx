@@ -24,11 +24,11 @@ type Props = {
 };
 
 export default function ExerciseCard({ exercise }: Props) {
-  const [reps, setReps] = useState(null);
+  const [reps, setReps] = useState(0);
   const [repTitle, setRepTitle] = useState("Rep");
   const [unitTitle, setUnitTitle] = useState("lbs");
-  const [units, setUnits] = useState(null);
-  const [sets, setSets] = useState(null);
+  const [units, setUnits] = useState(0);
+  const [sets, setSets] = useState(0);
 
   const dragControls = useDragControls();
 
