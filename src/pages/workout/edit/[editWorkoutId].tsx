@@ -41,7 +41,7 @@ export default function EditWorkout() {
   };
 
   const workoutDataTrimmed: WorkoutSchema = {
-    name: workoutData?.name || "",
+    name: workoutData?.name ?? "",
     id: workoutData?.id,
     muscleGroup: workoutData?.muscleGroup as MusicGroupType,
     region: workoutData?.region as RegionType,
@@ -90,4 +90,3 @@ export default function EditWorkout() {
     </ProtectedRoute>
   );
 }
-
