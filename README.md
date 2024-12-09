@@ -30,11 +30,12 @@ You can check out the [create-t3-app GitHub repository](https://github.com/t3-os
 Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
 
 ## Workoung with files
+
 add migration
+
 ```
 npx prisma migrate dev --name migration-name
 ```
-
 
 update the database
 
@@ -52,4 +53,18 @@ run the app
 
 ```
 pnpm dev
+```
+
+## Docker
+
+build
+
+```
+docker build -f Dockerfile.dev -t may-workout:dev.1.3 .
+```
+
+docker run
+
+```
+docker run -p 3000:3000 may-workout:dev.1.3
 ```
