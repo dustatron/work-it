@@ -12,11 +12,9 @@ WORKDIR /app
 RUN apk add git
 RUN git clone https://github.com/dustatron/work-it.git
 
-RUN npm ci
+RUN npm install
 
 RUN npm run build
-
-
 
 USER nextjs
 
